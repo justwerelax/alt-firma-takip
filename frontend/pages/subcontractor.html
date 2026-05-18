@@ -114,8 +114,13 @@
             .frow { grid-template-columns: 1fr; }
             .sec-hd { flex-direction: column; align-items: stretch; gap: 10px; }
         }
+        /* Bölüm başlığı renkleri (desktop) */
+        .sec-hdr-kendi td { background: #f3f0ff; color: #5b21b6; padding: 10px 14px; font-weight: 700; font-size: 13px; }
+        .sec-hdr-bizim td { background: #eff6ff; color: #1d4ed8; padding: 10px 14px; font-weight: 700; font-size: 13px; }
+
         /* İstatistik toggle butonu */
         .stats-toggle-btn { display: none; }
+
         @media (max-width: 640px) {
             /* İstatistik toggle */
             .stats-toggle-btn {
@@ -123,12 +128,12 @@
                 align-items: center;
                 justify-content: space-between;
                 width: 100%;
-                padding: 12px 16px;
+                padding: 11px 16px;
                 background: white;
                 border: none;
                 border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-                font-size: 14px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+                font-size: 13px;
                 font-weight: 600;
                 color: #374151;
                 cursor: pointer;
@@ -138,7 +143,7 @@
             .stats-wrap .stats { display: none; }
             .stats-wrap .stats.open { display: grid; grid-template-columns: 1fr 1fr; }
 
-            /* Kartlar kompakt */
+            /* Tablo kart görünümü */
             .tw { background: transparent; box-shadow: none; overflow-x: unset; border-radius: 0; }
             .tw table { min-width: unset; }
             .tw thead { display: none; }
@@ -146,27 +151,34 @@
                 display: block;
                 background: white;
                 border-radius: 10px;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
                 padding: 10px 12px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             }
-            /* Bölüm başlığı (Kendi İşlerim / Firma İşleri) */
+
+            /* Bölüm başlıkları — sadece renkli etiket, kart değil */
             .tw tbody tr.sec-hdr {
-                border-radius: 6px;
-                padding: 7px 12px;
-                margin-bottom: 4px;
-                margin-top: 6px;
-                box-shadow: none;
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-top: 14px;
+                margin-bottom: 3px;
             }
             .tw tbody tr.sec-hdr td {
                 display: block !important;
-                font-size: 12px;
-                font-weight: 700;
-                padding: 0 !important;
+                background: transparent !important;
+                padding: 0 0 0 8px !important;
                 border: none !important;
+                font-size: 11px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
             }
             .tw tbody tr.sec-hdr td::before { display: none !important; }
-            /* Normal satırlar */
+            .sec-hdr-kendi td { border-left: 3px solid #7c3aed !important; color: #5b21b6 !important; background: transparent !important; }
+            .sec-hdr-bizim td { border-left: 3px solid #2563eb !important; color: #1d4ed8 !important; background: transparent !important; }
+
+            /* Normal kart satırları */
             .tw tbody td {
                 display: flex;
                 justify-content: space-between;
@@ -183,27 +195,31 @@
                 font-weight: 700;
                 color: #9ca3af;
                 text-transform: uppercase;
-                letter-spacing: 0.03em;
+                letter-spacing: 0.04em;
                 flex-shrink: 0;
-                min-width: 65px;
+                min-width: 60px;
             }
             .tw tbody td[data-label=""]::before { display: none; }
             .tw tbody td:empty { display: none; }
-            /* Mobilde gereksiz kolonları gizle */
+
+            /* Gizlenen kolonlar */
             .tw tbody td[data-label="m²"],
             .tw tbody td[data-label="Birim"],
             .tw tbody td[data-label="Toplam"],
             .tw tbody td[data-label="Teslim"] { display: none; }
-            /* Borç satırı öne çıksın */
+
+            /* Borç satırı büyük ve belirgin */
             .tw tbody td[data-label="Borç"] {
-                font-size: 14px;
+                font-size: 15px;
                 font-weight: 700;
                 border-top: 1px solid #f3f4f6 !important;
                 margin-top: 4px;
-                padding-top: 6px;
+                padding-top: 7px;
             }
-            /* Para hareketleri - açıklama gizle */
+
+            /* Para hareketleri açıklama gizle */
             #payTbody td[data-label="Açıklama"] { display: none; }
+
             .balance-grid { grid-template-columns: 1fr 1fr; }
             .pending-item { flex-direction: column; align-items: flex-start; }
         }
@@ -214,7 +230,7 @@
         <h1>Alt Firma Detay</h1>
         <div style="display:flex;gap:8px;">
             <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
-            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.2</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.3</button>
             <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
         </div>
     </div>
@@ -587,7 +603,7 @@
                     : '-';
 
                 return `<tr style="${rowStyle}">
-                    <td data-label="✓">${checkboxCell}</td>
+                    <td data-label="">${checkboxCell}</td>
                     <td data-label="Açıklama" style="${textStyle}">${j.aciklama || '-'}</td>
                     <td data-label="Tarih" style="${textStyle}">${formatDate(j.tarih)}</td>
                     <td data-label="m²" style="${textStyle}">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
@@ -601,7 +617,7 @@
 
             // Kendi İşlerim — tik yok
             if (kendiIsleri.length > 0) {
-                html += `<tr class="sec-hdr"><td colspan="9" style="background:#f3f0ff;padding:10px 14px;font-weight:700;color:#5b21b6;font-size:13px;">🔵 Kendi İşlerim</td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-kendi"><td colspan="9">🔵 Kendi İşlerim</td></tr>`;
                 kendiIsleri.forEach(j => {
                     const islemler = isAdmin
                         ? `<div class="actions">
@@ -610,7 +626,7 @@
                           </div>`
                         : '-';
                     html += `<tr>
-                        <td data-label="✓"></td>
+                        <td data-label=""></td>
                         <td data-label="Açıklama">${j.aciklama || '-'}</td>
                         <td data-label="Tarih">${formatDate(j.tarih)}</td>
                         <td data-label="m²">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
@@ -625,7 +641,7 @@
 
             // Firma İşleri — tik var
             if (bizimIsler.length > 0) {
-                html += `<tr class="sec-hdr"><td colspan="9" style="background:#eff6ff;padding:10px 14px;font-weight:700;color:#1d4ed8;font-size:13px;">🟢 Firma İşleri</td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-bizim"><td colspan="9">🟢 Firma İşleri</td></tr>`;
                 bizimIsler.forEach(j => {
                     const isM2  = j.odeme_tipi === 'm2_bazli';
                     const isAna = j.teslimat_tipi === 'ana_firma_teslim';
