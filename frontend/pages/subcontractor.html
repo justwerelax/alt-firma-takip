@@ -600,7 +600,7 @@
                         <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
                         <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
                        </div>`
-                    : '-';
+                    : '';
 
                 return `<tr style="${rowStyle}">
                     <td data-label="">${checkboxCell}</td>
@@ -624,7 +624,7 @@
                             <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
                             <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
                           </div>`
-                        : '-';
+                        : '';
                     html += `<tr>
                         <td data-label=""></td>
                         <td data-label="Açıklama">${j.aciklama || '-'}</td>
@@ -717,7 +717,7 @@
                         <button class="btn-sm btn-edit" onclick="editPay(${p.id})">Düzenle</button>
                         <button class="btn-sm btn-del"  onclick="delPay(${p.id})">Sil</button>
                        </div>`
-                    : '-';
+                    : '';
                 return `<tr>
                     <td data-label="Tarih">${formatDate(p.tarih)}</td>
                     <td data-label="Tutar" style="font-weight:600;">${formatCurrency(p.tutar)}</td>
