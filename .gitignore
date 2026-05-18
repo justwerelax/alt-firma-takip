@@ -1,6 +1,9 @@
 # Database configuration
 backend/config/database.php
 
+# JWT secret (production credentials)
+backend/config/jwt.php
+
 # Environment files
 .env
 .env.local
