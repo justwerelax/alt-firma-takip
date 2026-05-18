@@ -118,6 +118,16 @@
         .sec-hdr-kendi td { background: #f3f0ff; color: #5b21b6; padding: 10px 14px; font-weight: 700; font-size: 13px; }
         .sec-hdr-bizim td { background: #eff6ff; color: #1d4ed8; padding: 10px 14px; font-weight: 700; font-size: 13px; }
 
+        /* ⋮ Aksiyon menüsü */
+        .card-menu-wrap { position: relative; display: inline-block; }
+        .btn-card-menu { background: #f3f4f6; border: none; border-radius: 6px; width: 30px; height: 30px; font-size: 18px; cursor: pointer; color: #6b7280; display: inline-flex; align-items: center; justify-content: center; font-family: inherit; line-height: 1; }
+        .btn-card-menu:hover { background: #e5e7eb; }
+        .card-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 500; min-width: 130px; overflow: hidden; }
+        .card-menu.open { display: block; }
+        .menu-item { display: block; width: 100%; padding: 11px 16px; text-align: left; border: none; background: none; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; color: #374151; }
+        .menu-item:hover { background: #f9fafb; }
+        .menu-del { color: #ef4444; border-top: 1px solid #f3f4f6; }
+
         /* İstatistik toggle butonu */
         .stats-toggle-btn { display: none; }
 
@@ -156,27 +166,35 @@
                 box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             }
 
-            /* Bölüm başlıkları — sadece renkli etiket, kart değil */
+            /* Bölüm başlıkları — ortalı pill etiket */
             .tw tbody tr.sec-hdr {
                 background: transparent !important;
                 box-shadow: none !important;
                 padding: 0 !important;
                 margin-top: 14px;
                 margin-bottom: 3px;
+                text-align: center;
             }
             .tw tbody tr.sec-hdr td {
                 display: block !important;
                 background: transparent !important;
-                padding: 0 0 0 8px !important;
+                padding: 0 !important;
                 border: none !important;
-                font-size: 11px !important;
-                font-weight: 800 !important;
+            }
+            .tw tbody tr.sec-hdr td::before { display: none !important; }
+            .sec-hdr-label {
+                display: inline-block;
+                padding: 4px 14px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.06em;
             }
-            .tw tbody tr.sec-hdr td::before { display: none !important; }
-            .sec-hdr-kendi td { border-left: 3px solid #7c3aed !important; color: #5b21b6 !important; background: transparent !important; }
-            .sec-hdr-bizim td { border-left: 3px solid #2563eb !important; color: #1d4ed8 !important; background: transparent !important; }
+            .sec-hdr-kendi td { background: transparent !important; }
+            .sec-hdr-kendi .sec-hdr-label { background: #ede9fe; color: #5b21b6; }
+            .sec-hdr-bizim td { background: transparent !important; }
+            .sec-hdr-bizim .sec-hdr-label { background: #dbeafe; color: #1d4ed8; }
 
             /* Normal kart satırları */
             .tw tbody td {
@@ -549,6 +567,18 @@
 
         let hideDone = false;
 
+        function toggleMenu(btn, e) {
+            e.stopPropagation();
+            const menu = btn.nextElementSibling;
+            document.querySelectorAll('.card-menu.open').forEach(m => {
+                if (m !== menu) m.classList.remove('open');
+            });
+            menu.classList.toggle('open');
+        }
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.card-menu.open').forEach(m => m.classList.remove('open'));
+        });
+
         function toggleStats() {
             const body = document.getElementById('statsBody');
             const chevron = document.getElementById('statsChevron');
@@ -596,9 +626,12 @@
                 }
 
                 const islemler = isAdmin
-                    ? `<div class="actions">
-                        <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
-                        <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
+                    ? `<div class="card-menu-wrap">
+                        <button class="btn-card-menu" onclick="toggleMenu(this,event)">⋮</button>
+                        <div class="card-menu">
+                            <button class="menu-item" onclick="editJob(${j.id})">✏️ Düzenle</button>
+                            <button class="menu-item menu-del" onclick="delJob(${j.id})">🗑️ Sil</button>
+                        </div>
                        </div>`
                     : '';
 
@@ -617,13 +650,16 @@
 
             // Kendi İşlerim — tik yok
             if (kendiIsleri.length > 0) {
-                html += `<tr class="sec-hdr sec-hdr-kendi"><td colspan="9">🔵 Kendi İşlerim</td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-kendi"><td colspan="9"><span class="sec-hdr-label">🔵 Kendi İşlerim</span></td></tr>`;
                 kendiIsleri.forEach(j => {
                     const islemler = isAdmin
-                        ? `<div class="actions">
-                            <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
-                            <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
-                          </div>`
+                        ? `<div class="card-menu-wrap">
+                            <button class="btn-card-menu" onclick="toggleMenu(this,event)">⋮</button>
+                            <div class="card-menu">
+                                <button class="menu-item" onclick="editJob(${j.id})">✏️ Düzenle</button>
+                                <button class="menu-item menu-del" onclick="delJob(${j.id})">🗑️ Sil</button>
+                            </div>
+                           </div>`
                         : '';
                     html += `<tr>
                         <td data-label=""></td>
@@ -641,7 +677,7 @@
 
             // Firma İşleri — tik var
             if (bizimIsler.length > 0) {
-                html += `<tr class="sec-hdr sec-hdr-bizim"><td colspan="9">🟢 Firma İşleri</td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-bizim"><td colspan="9"><span class="sec-hdr-label">🟢 Firma İşleri</span></td></tr>`;
                 bizimIsler.forEach(j => {
                     const isM2  = j.odeme_tipi === 'm2_bazli';
                     const isAna = j.teslimat_tipi === 'ana_firma_teslim';
@@ -713,9 +749,12 @@
             }
             tb.innerHTML = paysData.map(p => {
                 const islemler = isAdmin
-                    ? `<div class="actions">
-                        <button class="btn-sm btn-edit" onclick="editPay(${p.id})">Düzenle</button>
-                        <button class="btn-sm btn-del"  onclick="delPay(${p.id})">Sil</button>
+                    ? `<div class="card-menu-wrap">
+                        <button class="btn-card-menu" onclick="toggleMenu(this,event)">⋮</button>
+                        <div class="card-menu">
+                            <button class="menu-item" onclick="editPay(${p.id})">✏️ Düzenle</button>
+                            <button class="menu-item menu-del" onclick="delPay(${p.id})">🗑️ Sil</button>
+                        </div>
                        </div>`
                     : '';
                 return `<tr>
