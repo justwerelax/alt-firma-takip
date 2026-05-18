@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alt Firma Detay - Alt Firma Takip</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <style>
+        body { background: #f5f7fa; }
+        .header { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 18px; color: #667eea; }
+        .btn-back { padding: 8px 16px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .info-card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .firm-name { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .firm-meta { display: flex; gap: 20px; color: #6b7280; font-size: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+        /* Göstergeler */
+        .balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; }
+        .bal-item { padding: 16px 20px; border-radius: 10px; text-align: center; }
+        .bal-item.kendi   { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+        .bal-item.bizim   { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+        .bal-item.borc    { background: linear-gradient(135deg,#fee2e2,#fecaca); }
+        .bal-item.alacak  { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+        .bal-item.sifir   { background: linear-gradient(135deg,#f3f4f6,#e5e7eb); }
+        .bal-item .bi-lbl { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+        .bal-item .bi-val { font-size: 22px; font-weight: 700; color: #1f2937; }
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 14px; margin-bottom: 24px; }
+        .stat { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat .sl { font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
+        .stat .sv { font-size: 18px; font-weight: 700; color: #667eea; }
+        /* Section */
+        .sec { margin-bottom: 28px; }
+        .sec-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .sec-hd h2 { font-size: 17px; }
+        .btn-add { padding: 9px 18px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+        .btn-add:hover { background: #5568d3; }
+        /* Table */
+        .tw { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 520px; }
+        thead { background: #f9fafb; }
+        th { padding: 12px 14px; text-align: left; font-size: 13px; font-weight: 600; color: #6b7280; border-bottom: 2px solid #e5e7eb; white-space: nowrap; }
+        td { padding: 12px 14px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #f9fafb; }
+        .actions { display: flex; gap: 6px; }
+        .btn-sm { padding: 5px 11px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: inherit; }
+        .btn-edit { background: #f59e0b; color: white; }
+        .btn-del  { background: #ef4444; color: white; }
+        .tag-kendi { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; background:#ede9fe; color:#5b21b6; }
+        .tag-bizim { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; background:#dbeafe; color:#1d4ed8; }
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+        .modal.show { display: flex; }
+        .mbox { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; animation: mIn .2s ease; }
+        @keyframes mIn { from{transform:scale(.95);opacity:0} to{transform:scale(1);opacity:1} }
+        .mhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .mhead h3 { font-size: 17px; }
+        .btn-x { background: none; border: none; font-size: 22px; color: #9ca3af; cursor: pointer; }
+        .fg { margin-bottom: 14px; }
+        .fg label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+        .fg input, .fg select, .fg textarea { width: 100%; padding: 9px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .fg input:focus, .fg select:focus, .fg textarea:focus { outline: none; border-color: #667eea; }
+        .fg textarea { resize: vertical; min-height: 60px; }
+        .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .calc { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-top: 4px; }
+        .calc .cl { font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 3px; }
+        .calc .cv { font-size: 18px; font-weight: 700; color: #667eea; }
+        .fa { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; border-top: 1px solid #e5e7eb; }
+        .btn-cancel { padding: 9px 18px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; }
+        .btn-save   { padding: 9px 18px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; }
+        /* İş tipi seçici */
+        .is-tipi-tabs { display: flex; gap: 0; margin-bottom: 18px; border-radius: 8px; overflow: hidden; border: 2px solid #e5e7eb; }
+        .is-tipi-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; background: white; color: #6b7280; border: none; font-family: inherit; transition: all .2s; }
+        .is-tipi-tab.active.kendi { background: #ede9fe; color: #5b21b6; }
+        .is-tipi-tab.active.bizim { background: #dbeafe; color: #1d4ed8; }
+        .is-tipi-section { display: none; }
+        .is-tipi-section.show { display: block; }
+        /* Ödeme tipi seçici */
+        .odeme-tipi-tabs { display: flex; gap: 0; margin-bottom: 14px; border-radius: 8px; overflow: hidden; border: 2px solid #e5e7eb; }
+        .odeme-tab { flex: 1; padding: 8px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; background: white; color: #6b7280; border: none; font-family: inherit; transition: all .2s; }
+        .odeme-tab.active { background: #dbeafe; color: #1d4ed8; }
+        /* Bitmiş işleri gizle butonu */
+        .btn-toggle-done { padding: 9px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+        .btn-toggle-done.active { background: #fef3c7; color: #92400e; }
+        /* Bekleyen Onaylar */
+        .pending-sec { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px 24px; margin-bottom: 20px; border-left: 4px solid #f59e0b; }
+        .pending-sec h2 { font-size: 16px; font-weight: 700; color: #92400e; margin-bottom: 14px; }
+        .pending-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f3f4f6; gap: 12px; flex-wrap: wrap; }
+        .pending-item:last-child { border-bottom: none; }
+        .pending-info { font-size: 14px; }
+        .pending-info .pi-type { font-weight: 700; margin-bottom: 3px; }
+        .pending-info .pi-detail { color: #6b7280; font-size: 13px; }
+        .pending-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .btn-approve { padding: 6px 14px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+        .btn-reject  { padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+        .pending-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .pb-teslim { background: #fef3c7; color: #92400e; }
+        .pb-odeme  { background: #dbeafe; color: #1d4ed8; }
+        .pending-empty { color: #9ca3af; font-size: 14px; padding: 8px 0; }
+        /* İstek gönderildi durumu */
+        .teslim-pending { color: #f59e0b; font-size: 12px; font-style: italic; margin-left: 4px; }
+        /* Toast */
+        .toast { position: fixed; top: 20px; right: 20px; background: white; padding: 14px 20px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); z-index: 9999; display: none; align-items: center; gap: 10px; min-width: 260px; }
+        .toast.show { display: flex; }
+        .toast.success { border-left: 4px solid #10b981; }
+        .toast.error   { border-left: 4px solid #ef4444; }
+        @media (max-width: 768px) {
+            .header { padding: 0 16px; }
+            .firm-meta { flex-direction: column; gap: 6px; }
+            .frow { grid-template-columns: 1fr; }
+            .sec-hd { flex-direction: column; align-items: stretch; gap: 10px; }
+        }
+        @media (max-width: 640px) {
+            .tw { background: transparent; box-shadow: none; overflow-x: unset; border-radius: 0; }
+            .tw table { min-width: unset; }
+            .tw thead { display: none; }
+            .tw tbody tr {
+                display: block;
+                background: white;
+                border-radius: 12px;
+                margin-bottom: 10px;
+                padding: 14px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            }
+            .tw tbody tr.sec-hdr {
+                border-radius: 8px;
+                padding: 8px 14px;
+                margin-bottom: 4px;
+                box-shadow: none;
+            }
+            .tw tbody tr.sec-hdr td { font-size: 13px; font-weight: 700; }
+            .tw tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0;
+                border: none !important;
+                font-size: 13px;
+                gap: 8px;
+                text-decoration: inherit;
+            }
+            .tw tbody td::before {
+                content: attr(data-label);
+                font-size: 11px;
+                font-weight: 700;
+                color: #9ca3af;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                flex-shrink: 0;
+                min-width: 70px;
+            }
+            .tw tbody td[data-label=""]::before { display: none; }
+            .tw tbody td:empty { display: none; }
+            /* Mobilde gereksiz kolonları gizle */
+            .tw tbody td[data-label="M²"],
+            .tw tbody td[data-label="Birim"],
+            .tw tbody td[data-label="Toplam"],
+            .tw tbody td[data-label="Teslim"] { display: none; }
+            /* Borç satırı öne çıksın */
+            .tw tbody td[data-label="Borç"] {
+                font-size: 16px;
+                font-weight: 700;
+                border-top: 1px solid #f3f4f6;
+                margin-top: 6px;
+                padding-top: 10px;
+            }
+            /* Para hareketleri - açıklama gizle */
+            #payTbody td[data-label="Açıklama"] { display: none; }
+            .balance-grid { grid-template-columns: 1fr 1fr; }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .pending-item { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Alt Firma Detay</h1>
+        <div style="display:flex;gap:8px;">
+            <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.1</button>
+            <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="loadingMsg" style="text-align:center;padding:60px;color:#9ca3af;">⏳ Yükleniyor...</div>
+        <div id="content" style="display:none;">
+
+            <!-- Bekleyen Onaylar (sadece admin) -->
+            <div id="pendingSec" class="pending-sec" style="display:none;">
+                <h2>⏳ Bekleyen Onaylar</h2>
+                <div id="pendingList"><p class="pending-empty">Bekleyen istek yok</p></div>
+            </div>
+
+            <!-- Firma Bilgisi -->
+            <div class="info-card">
+                <div class="firm-name" id="firmName"></div>
+                <div class="firm-meta">
+                    <span id="firmPhone"></span>
+                    <span id="firmAddr"></span>
+                </div>
+                <!-- Göstergeler -->
+                <div class="balance-grid">
+                    <div class="bal-item kendi">
+                        <div class="bi-lbl">🔵 Kendi İşlerim Bakiyesi</div>
+                        <div class="bi-val" id="balKendi">0 ₺</div>
+                    </div>
+                    <div class="bal-item bizim">
+                        <div class="bi-lbl">🟢 Firma İşleri Bakiyesi</div>
+                        <div class="bi-val" id="balBizim">0 ₺</div>
+                    </div>
+                    <div class="bal-item" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd);">
+                        <div class="bi-lbl">💸 Yapılan Ödemeler</div>
+                        <div class="bi-val" id="balOdeme" style="color:#0369a1;">0 ₺</div>
+                    </div>
+                    <div id="balMevcutCard" class="bal-item sifir">
+                        <div class="bi-lbl" id="balMevcutLabel">💰 Firma Bakiyesi</div>
+                        <div class="bi-val" id="balMevcut">0 ₺</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="stats">
+                <div class="stat"><div class="sl">Bizden Verilen Adres</div><div class="sv" id="stJobs">0</div></div>
+                <div class="stat"><div class="sl">Toplam m² (Kendi İşleri)</div><div class="sv" id="stM2">0</div></div>
+                <div class="stat"><div class="sl">Elde Edilen Kar (Bizden Gelen)</div><div class="sv" id="stCom">0 ₺</div></div>
+            </div>
+
+            <!-- İşler -->
+            <div class="sec">
+                <div class="sec-hd">
+                    <h2>Yıkama İşleri</h2>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button id="toggleDoneBtn" class="btn-toggle-done" onclick="toggleDoneJobs()">Bitmiş İşleri Gizle</button>
+                        <button id="addJobBtn" class="btn-add" onclick="openJobModal()">+ Yeni İş Ekle</button>
+                    </div>
+                </div>
+                <div class="tw">
+                    <table>
+                        <thead><tr><th></th><th>Müşteri/Açıklama</th><th>Tarih</th><th>m²</th><th>Birim Fiyat</th><th>Toplam</th><th>Teslimat Tipi</th><th>Borç</th><th>İşlemler</th></tr></thead>
+                        <tbody id="jobsTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Para Hareketleri -->
+            <div class="sec">
+                <div class="sec-hd">
+                    <h2>Para Hareketleri</h2>
+                    <button id="payBtn" class="btn-add" onclick="openPayModal()">+ Yeni Hareket Ekle</button>
+                </div>
+                <div class="tw">
+                    <table>
+                        <thead><tr><th>Tarih</th><th>Tutar</th><th>Tip</th><th>Açıklama</th><th>İşlemler</th></tr></thead>
+                        <tbody id="payTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- İsteklerim (sadece firma kullanıcısı) -->
+            <div id="isteklerimSec" class="sec" style="display:none;">
+                <div class="sec-hd"><h2>📋 İsteklerim</h2></div>
+                <div class="tw">
+                    <table>
+                        <thead><tr><th>Tip</th><th>Tarih</th><th>Detay</th><th>Durum</th></tr></thead>
+                        <tbody id="isteklerimTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Job Modal -->
+    <div id="jobModal" class="modal">
+        <div class="mbox">
+            <div class="mhead"><h3 id="jobMTitle">Yeni İş Ekle</h3><button class="btn-x" onclick="closeJobModal()">×</button></div>
+            <form id="jobForm" novalidate>
+                <input type="hidden" id="jobEditId">
+
+                <!-- İş Tipi Seçici -->
+                <div class="is-tipi-tabs">
+                    <button type="button" class="is-tipi-tab active kendi" id="tabKendi" onclick="switchTab('kendi_isi')">🔵 Kendi İşim</button>
+                    <button type="button" class="is-tipi-tab bizim"        id="tabBizim" onclick="switchTab('bizim_isimiz')">🟢 Firma İşi</button>
+                </div>
+                <input type="hidden" id="jIsTipi" value="kendi_isi">
+
+                <div class="fg"><label>Tarih *</label><input type="date" id="jTarih" required></div>
+                <div id="secM2Alan" class="fg"><label>Metrekare</label><input type="number" id="jM2" step="0.01" min="0" placeholder="0.00 (opsiyonel)"></div>
+
+                <!-- Kendi İşi Bölümü -->
+                <div id="secKendi" class="is-tipi-section show">
+                    <div class="fg">
+                        <label>Birim Fiyat (₺/m²) *</label>
+                        <input type="number" id="jFiyatKendi" step="0.01" placeholder="Firmaya özel sabit fiyat">
+                    </div>
+                    <div class="calc">
+                        <div class="cl">Toplam Tutar (Borç)</div>
+                        <div class="cv" id="jToplamKendi">0 ₺</div>
+                    </div>
+                </div>
+
+                <!-- Bizim İşimiz Bölümü -->
+                <div id="secBizim" class="is-tipi-section">
+                    <!-- Alt seçenek: m² bazlı / komisyon bazlı -->
+                    <div class="odeme-tipi-tabs">
+                        <button type="button" class="odeme-tab active" id="tabM2" onclick="switchOdemeTipi('m2_bazli')">📐 m² Bazlı</button>
+                        <button type="button" class="odeme-tab" id="tabKomisyon" onclick="switchOdemeTipi('komisyon_bazli')">💰 Komisyon Bazlı</button>
+                    </div>
+                    <input type="hidden" id="jOdemeTipi" value="m2_bazli">
+
+                    <!-- m² bazlı alanlar -->
+                    <div id="secM2Bazli">
+                        <div class="fg">
+                            <label>Birim Fiyat (₺/m²) *</label>
+                            <input type="number" id="jFiyatBizim" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="fg">
+                            <label>Müşteri Tutarı (₺) *</label>
+                            <input type="number" id="jMusteriTutari" step="0.01" placeholder="Müşteriden alınan toplam tutar">
+                        </div>
+                        <div class="calc">
+                            <div class="cl">Toplam Tutar (Bize Ödenecek)</div>
+                            <div class="cv" id="jToplamBizim">0 ₺</div>
+                        </div>
+                    </div>
+
+                    <!-- Komisyon bazlı alanlar -->
+                    <div id="secKomisyonBazli" style="display:none;">
+                        <div class="fg">
+                            <label>Sipariş Tutarı (₺) *</label>
+                            <input type="number" id="jSiparisTutari" step="0.01" placeholder="Müşteriden alınan toplam tutar">
+                        </div>
+                        <div class="fg">
+                            <label>Teslimat Tipi</label>
+                            <select id="jTeslimatTipi">
+                                <option value="alt_firma_teslim">Alt Firma Teslim (%40)</option>
+                                <option value="ana_firma_teslim">Ana Firma Teslim (%30)</option>
+                            </select>
+                        </div>
+                        <div class="frow">
+                            <div class="calc"><div class="cl">Sipariş Tutarı</div><div class="cv" id="jToplamKomisyon">0 ₺</div></div>
+                            <div class="calc"><div class="cl">Komisyon (Borç)</div><div class="cv" id="jKomisyonBizim">0 ₺</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fg" style="margin-top:14px;"><label>Açıklama</label><textarea id="jAciklama" rows="2"></textarea></div>
+                <div class="fa">
+                    <button type="button" class="btn-cancel" onclick="closeJobModal()">İptal</button>
+                    <button type="submit" class="btn-save">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payModal" class="modal">
+        <div class="mbox">
+            <div class="mhead"><h3 id="payMTitle">Yeni Para Hareketi</h3><button class="btn-x" onclick="closePayModal()">×</button></div>
+            <form id="payForm">
+                <input type="hidden" id="payEditId">
+                <div class="fg"><label>Tarih *</label><input type="date" id="pTarih" required></div>
+                <div class="fg"><label>Tutar *</label><input type="number" id="pTutar" step="0.01" min="0.01" required placeholder="0.00"></div>
+                <div id="pTipGroup" class="fg">
+                    <label>Hareket Tipi *</label>
+                    <select id="pTip">
+                        <option value="">Seçiniz</option>
+                        <option value="odeme">💸 Ödeme (Alt firma → Ana firma, borç azalır)</option>
+                        <option value="bakiye_ekle">➕ Bakiye Ekle (Borca eklenir)</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Açıklama</label><textarea id="pAciklama" rows="2"></textarea></div>
+                <div class="fa">
+                    <button type="button" class="btn-cancel" onclick="closePayModal()">İptal</button>
+                    <button type="submit" class="btn-save">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+    <script>
+        if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
+
+        const isAdmin  = Auth.isAdmin();
+        const userRole = Auth.getRole();
+
+        const params = new URLSearchParams(window.location.search);
+        let subId = parseInt(params.get('id'));
+
+        // Firma kullanıcısı sadece kendi firmasına erişebilir
+        if (!isAdmin) {
+            const firmaId = Auth.getFirmaId();
+            if (!firmaId) { Auth.logout(); window.location.replace('login.html'); }
+            subId = firmaId;
+        }
+
+        if (!subId) { window.location.replace('dashboard.html'); }
+
+        let jobsData = [], paysData = [], subData = {}, pendingData = [];
+
+        function applyRoleUI() {
+            if (isAdmin) {
+                document.getElementById('pendingSec').style.display = 'block';
+            } else {
+                // Firma kullanıcısı: Geri Dön gizle, butonları güncelle
+                document.querySelector('.btn-back').style.display = 'none';
+                document.getElementById('addJobBtn').style.display = 'none';
+                document.getElementById('payBtn').textContent = '💸 Ödeme Yap';
+            }
+        }
+
+        function toast(msg, type='success') {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent  = msg;
+            document.getElementById('toastIcon').textContent = type === 'success' ? '✅' : '❌';
+            t.className = 'toast show ' + type;
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function today() { return new Date().toISOString().split('T')[0]; }
+
+        async function loadAll() {
+            try {
+                const res = await api.getSubcontractor(subId);
+                if (!res.success) { toast('Yüklenemedi','error'); return; }
+
+                subData  = res.data.subcontractor;
+                const sum = res.data.summary || {};
+                jobsData  = res.data.jobs || [];
+                paysData  = res.data.payments || [];
+
+                // Firma bilgisi
+                document.getElementById('firmName').textContent = subData.ad;
+                document.getElementById('firmPhone').textContent = subData.telefon ? '📞 ' + subData.telefon : '';
+                document.getElementById('firmAddr').textContent  = subData.adres   ? '📍 ' + subData.adres   : '';
+
+                // Göstergeler
+                const kendi   = parseFloat(sum.kendi_isleri_toplam    || 0);
+                const bizim   = parseFloat(sum.bizim_islerimiz_toplam || 0);
+                const odeme   = parseFloat(sum.toplamOdeme            || 0);
+                const borc    = parseFloat(sum.mevcut_borc            || 0);
+
+                document.getElementById('balKendi').textContent  = formatCurrency(kendi);
+                document.getElementById('balBizim').textContent  = formatCurrency(bizim);
+                document.getElementById('balOdeme').textContent  = formatCurrency(odeme);
+                document.getElementById('balMevcut').textContent = formatCurrency(Math.abs(borc));
+
+                const borcCard  = document.getElementById('balMevcutCard');
+                const borcLabel = document.getElementById('balMevcutLabel');
+                if (borc < 0) {
+                    borcCard.className  = 'bal-item borc';
+                    borcLabel.textContent = '🔴 Firma Bakiyesi (Bize Borçlu)';
+                } else if (borc > 0) {
+                    borcCard.className  = 'bal-item alacak';
+                    borcLabel.textContent = '🟢 Firma Bakiyesi (Biz Borçluyuz)';
+                } else {
+                    borcCard.className  = 'bal-item sifir';
+                    borcLabel.textContent = '⚪ Firma Bakiyesi (Dengede)';
+                }
+
+                // İstatistikler
+                document.getElementById('stJobs').textContent = sum.bizimAdres || 0;
+                document.getElementById('stM2').textContent   = parseFloat(sum.kendiM2 || 0).toFixed(2);
+                document.getElementById('stCom').textContent  = formatCurrency(sum.firmaKari || 0);
+
+                // Bekleyen istekleri yükle
+                try {
+                    const pr = await api.getPendingRequests(subId);
+                    pendingData = (pr.success && pr.data && pr.data.requests) ? pr.data.requests : [];
+                } catch(_) { pendingData = []; }
+
+                renderJobs();
+                renderPays();
+                renderPending();
+                renderIsteklerim();
+                applyRoleUI();
+
+                document.getElementById('loadingMsg').style.display = 'none';
+                document.getElementById('content').style.display    = 'block';
+            } catch(e) {
+                console.error(e);
+                toast('Bağlantı hatası','error');
+            }
+        }
+
+        let hideDone = false;
+
+        function toggleDoneJobs() {
+            hideDone = !hideDone;
+            const btn = document.getElementById('toggleDoneBtn');
+            btn.textContent = hideDone ? 'Bitmiş İşleri Göster' : 'Bitmiş İşleri Gizle';
+            btn.classList.toggle('active', hideDone);
+            renderJobs();
+        }
+
+        function renderJobs() {
+            const kendiIsleri = jobsData.filter(j => j.is_tipi === 'kendi_isi'   && !(hideDone && parseInt(j.teslim_edildi) === 1));
+            const bizimIsler  = jobsData.filter(j => j.is_tipi === 'bizim_isimiz' && !(hideDone && parseInt(j.teslim_edildi) === 1));
+            const tb = document.getElementById('jobsTbody');
+
+            if (!jobsData.length) {
+                tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#9ca3af;">İş kaydı yok</td></tr>';
+                return;
+            }
+
+            let html = '';
+
+            function jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText) {
+                const teslim       = parseInt(j.teslim_edildi) === 1;
+                const hasPending   = pendingData.some(p => p.is_id == j.id && p.istek_tipi === 'teslim' && p.durum === 'beklemede');
+                const rowStyle     = teslim ? 'background:#f0fdf4;' : '';
+                const textStyle    = teslim ? 'text-decoration:line-through;color:#9ca3af;' : '';
+
+                let checkboxCell;
+                if (isAdmin) {
+                    checkboxCell = `<input type="checkbox" class="teslim-check" data-id="${j.id}" ${teslim ? 'checked' : ''}
+                        style="width:16px;height:16px;cursor:pointer;accent-color:#10b981;">`;
+                } else if (teslim) {
+                    checkboxCell = `<input type="checkbox" checked disabled style="width:16px;height:16px;accent-color:#10b981;">`;
+                } else if (hasPending) {
+                    checkboxCell = `<span style="font-size:12px;color:#f59e0b;">⏳ Onay bekleniyor</span>`;
+                } else {
+                    checkboxCell = `<input type="checkbox" class="teslim-check" data-id="${j.id}"
+                        style="width:16px;height:16px;cursor:pointer;accent-color:#10b981;">`;
+                }
+
+                const islemler = isAdmin
+                    ? `<div class="actions">
+                        <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
+                        <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
+                       </div>`
+                    : '-';
+
+                return `<tr style="${rowStyle}">
+                    <td data-label="✓">${checkboxCell}</td>
+                    <td data-label="Açıklama" style="${textStyle}">${j.aciklama || '-'}</td>
+                    <td data-label="Tarih" style="${textStyle}">${formatDate(j.tarih)}</td>
+                    <td data-label="m²" style="${textStyle}">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
+                    <td data-label="Birim" style="${textStyle}">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
+                    <td data-label="Toplam" style="${textStyle}">${formatCurrency(j.toplam_tutar)}</td>
+                    <td data-label="Teslim" style="${textStyle}">${teslimatText}</td>
+                    <td data-label="Borç" style="font-weight:700;color:${teslim ? '#9ca3af' : borcRenk};${teslim ? 'text-decoration:line-through;' : ''}">${borcPrefix}${formatCurrency(borcTutar)}</td>
+                    <td data-label="">${islemler}</td>
+                </tr>`;
+            }
+
+            // Kendi İşlerim — tik yok
+            if (kendiIsleri.length > 0) {
+                html += `<tr class="sec-hdr"><td colspan="9" style="background:#f3f0ff;padding:10px 14px;font-weight:700;color:#5b21b6;font-size:13px;">🔵 Kendi İşlerim</td></tr>`;
+                kendiIsleri.forEach(j => {
+                    const islemler = isAdmin
+                        ? `<div class="actions">
+                            <button class="btn-sm btn-edit" onclick="editJob(${j.id})">Düzenle</button>
+                            <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
+                          </div>`
+                        : '-';
+                    html += `<tr>
+                        <td data-label="✓"></td>
+                        <td data-label="Açıklama">${j.aciklama || '-'}</td>
+                        <td data-label="Tarih">${formatDate(j.tarih)}</td>
+                        <td data-label="m²">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
+                        <td data-label="Birim">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
+                        <td data-label="Toplam">${formatCurrency(j.toplam_tutar)}</td>
+                        <td data-label="Teslim">-</td>
+                        <td data-label="Borç" style="font-weight:700;color:#5b21b6;">${formatCurrency(j.toplam_tutar)}</td>
+                        <td data-label="">${islemler}</td>
+                    </tr>`;
+                });
+            }
+
+            // Firma İşleri — tik var
+            if (bizimIsler.length > 0) {
+                html += `<tr class="sec-hdr"><td colspan="9" style="background:#eff6ff;padding:10px 14px;font-weight:700;color:#1d4ed8;font-size:13px;">🟢 Firma İşleri</td></tr>`;
+                bizimIsler.forEach(j => {
+                    const isM2  = j.odeme_tipi === 'm2_bazli';
+                    const isAna = j.teslimat_tipi === 'ana_firma_teslim';
+                    const oran  = parseFloat(j.komisyon_orani) * 100;
+                    let borcTutar, borcRenk, borcPrefix, teslimatText;
+                    if (isM2) {
+                        borcTutar    = parseFloat(j.toplam_tutar);
+                        borcRenk     = '#1d4ed8';
+                        borcPrefix   = '';
+                        teslimatText = 'm² Bazlı';
+                    } else if (isAna) {
+                        borcTutar    = parseFloat(j.komisyon_tutari);
+                        borcRenk     = '#ef4444';
+                        borcPrefix   = '-';
+                        teslimatText = `Ana Firma Teslim (%${oran.toFixed(0)})`;
+                    } else {
+                        borcTutar    = parseFloat(j.toplam_tutar) - parseFloat(j.komisyon_tutari);
+                        borcRenk     = '#1d4ed8';
+                        borcPrefix   = '';
+                        teslimatText = `Alt Firma Teslim (%${(100-oran).toFixed(0)} bize)`;
+                    }
+                    html += jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText);
+                });
+            }
+
+            tb.innerHTML = html;
+        }
+
+        async function toggleTeslim(id, checkbox) {
+            const res = await api.toggleJobTeslim(id);
+            if (res.success) {
+                loadAll();
+            } else {
+                checkbox.checked = !checkbox.checked;
+                toast('Güncellenemedi', 'error');
+            }
+        }
+
+        // Tik event delegation
+        document.addEventListener('change', async function(e) {
+            if (e.target && e.target.classList.contains('teslim-check')) {
+                const id = parseInt(e.target.dataset.id);
+
+                if (isAdmin) {
+                    const res = await api.toggleJobTeslim(id);
+                    if (res.success) { loadAll(); }
+                    else { e.target.checked = !e.target.checked; toast('Güncellenemedi', 'error'); }
+                } else {
+                    // Firma kullanıcısı: onay isteği gönder
+                    e.target.checked = false; // geri al, onay gerekli
+                    if (!confirm('Teslim edildi olarak işaretlemek istiyor musunuz? Admin onayına gönderilecek.')) return;
+                    const res = await api.createPendingRequest({
+                        alt_firma_id: subId,
+                        istek_tipi:   'teslim',
+                        is_id:        id,
+                        tarih:        new Date().toISOString().split('T')[0]
+                    });
+                    if (res.success) { toast('Teslim isteği admin onayına gönderildi'); loadAll(); }
+                    else toast(res.error || 'Gönderilemedi', 'error');
+                }
+            }
+        });
+
+        function renderPays() {
+            const tb = document.getElementById('payTbody');
+            if (!paysData.length) {
+                tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#9ca3af;">Para hareketi yok</td></tr>';
+                return;
+            }
+            tb.innerHTML = paysData.map(p => {
+                const islemler = isAdmin
+                    ? `<div class="actions">
+                        <button class="btn-sm btn-edit" onclick="editPay(${p.id})">Düzenle</button>
+                        <button class="btn-sm btn-del"  onclick="delPay(${p.id})">Sil</button>
+                       </div>`
+                    : '-';
+                return `<tr>
+                    <td data-label="Tarih">${formatDate(p.tarih)}</td>
+                    <td data-label="Tutar" style="font-weight:600;">${formatCurrency(p.tutar)}</td>
+                    <td data-label="Tip">${p.hareket_tipi === 'odeme' ? '💸 Ödeme' : '➕ Bakiye Ekle'}</td>
+                    <td data-label="Açıklama">${p.aciklama || '-'}</td>
+                    <td data-label="">${islemler}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderPending() {
+            const sec  = document.getElementById('pendingSec');
+            const list = document.getElementById('pendingList');
+            const bekleyenler = pendingData.filter(p => p.durum === 'beklemede');
+
+            if (!isAdmin) return;
+
+            if (!bekleyenler.length) {
+                sec.style.display = 'none';
+                return;
+            }
+
+            sec.style.display = 'block';
+            list.innerHTML = bekleyenler.map(p => {
+                const typeBadge = p.istek_tipi === 'teslim'
+                    ? '<span class="pending-badge pb-teslim">Teslim İsteği</span>'
+                    : '<span class="pending-badge pb-odeme">Ödeme İsteği</span>';
+                const detail = p.istek_tipi === 'teslim'
+                    ? `İş: ${p.is_aciklama || '#' + p.is_id} — Tarih: ${formatDate(p.tarih)}`
+                    : `Tutar: ${formatCurrency(p.tutar)} — Tarih: ${formatDate(p.tarih)}${p.aciklama ? ' — ' + p.aciklama : ''}`;
+                return `<div class="pending-item">
+                    <div class="pending-info">
+                        <div class="pi-type">${typeBadge}</div>
+                        <div class="pi-detail">${detail}</div>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="btn-approve" onclick="approvePending(${p.id})">✓ Onayla</button>
+                        <button class="btn-reject"  onclick="rejectPending(${p.id})">✗ Reddet</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function approvePending(id) {
+            const res = await api.approvePendingRequest(id);
+            if (res.success) {
+                toast('Onaylandı');
+                pendingData = pendingData.map(p => p.id == id ? {...p, durum: 'onaylandi'} : p);
+                renderPending();
+            } else {
+                toast(res.error || 'Hata', 'error');
+            }
+            loadAll();
+        }
+
+        async function rejectPending(id) {
+            if (!confirm('Bu isteği reddetmek istiyor musunuz?')) return;
+            const res = await api.rejectPendingRequest(id);
+            if (res.success) {
+                toast('Reddedildi');
+                pendingData = pendingData.map(p => p.id == id ? {...p, durum: 'reddedildi'} : p);
+                renderPending();
+            } else {
+                toast(res.error || 'Hata', 'error');
+            }
+            loadAll();
+        }
+
+        function renderIsteklerim() {
+            if (isAdmin) return;
+            const sec = document.getElementById('isteklerimSec');
+            const tb  = document.getElementById('isteklerimTbody');
+
+            if (!pendingData.length) { sec.style.display = 'none'; return; }
+
+            sec.style.display = 'block';
+            tb.innerHTML = pendingData.map(p => {
+                const tip    = p.istek_tipi === 'teslim' ? '🚚 Teslim İsteği' : '💸 Ödeme İsteği';
+                const detail = p.istek_tipi === 'teslim'
+                    ? (p.is_aciklama || ('#' + p.is_id))
+                    : `${formatCurrency(p.tutar)}${p.aciklama ? ' — ' + p.aciklama : ''}`;
+                let badge;
+                if (p.durum === 'beklemede') {
+                    badge = '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">⏳ Beklemede</span>';
+                } else if (p.durum === 'onaylandi') {
+                    badge = '<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">✅ Onaylandı</span>';
+                } else {
+                    badge = '<span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">❌ Reddedildi</span>';
+                }
+                return `<tr>
+                    <td>${tip}</td>
+                    <td>${formatDate(p.tarih)}</td>
+                    <td>${detail}</td>
+                    <td>${badge}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ── İş Tipi Tab ──────────────────────────────────────────────────────
+        function switchTab(tip) {
+            document.getElementById('jIsTipi').value = tip;
+            if (tip === 'kendi_isi') {
+                document.getElementById('tabKendi').className = 'is-tipi-tab active kendi';
+                document.getElementById('tabBizim').className = 'is-tipi-tab bizim';
+                document.getElementById('secKendi').classList.add('show');
+                document.getElementById('secBizim').classList.remove('show');
+            } else {
+                document.getElementById('tabKendi').className = 'is-tipi-tab kendi';
+                document.getElementById('tabBizim').className = 'is-tipi-tab active bizim';
+                document.getElementById('secKendi').classList.remove('show');
+                document.getElementById('secBizim').classList.add('show');
+                switchOdemeTipi(document.getElementById('jOdemeTipi').value);
+                return;
+            }
+            updateCalc();
+        }
+
+        function switchOdemeTipi(tip) {
+            document.getElementById('jOdemeTipi').value = tip;
+            if (tip === 'm2_bazli') {
+                document.getElementById('tabM2').className       = 'odeme-tab active';
+                document.getElementById('tabKomisyon').className = 'odeme-tab';
+                document.getElementById('secM2Bazli').style.display      = 'block';
+                document.getElementById('secKomisyonBazli').style.display = 'none';
+                document.getElementById('secM2Alan').style.display        = 'block';
+            } else {
+                document.getElementById('tabM2').className       = 'odeme-tab';
+                document.getElementById('tabKomisyon').className = 'odeme-tab active';
+                document.getElementById('secM2Bazli').style.display      = 'none';
+                document.getElementById('secKomisyonBazli').style.display = 'block';
+                document.getElementById('secM2Alan').style.display        = 'none';
+            }
+            updateCalc();
+        }
+
+        function updateCalc() {
+            const m2       = parseFloat(document.getElementById('jM2').value) || 0;
+            const isTip    = document.getElementById('jIsTipi').value;
+            const odemeTip = document.getElementById('jOdemeTipi') ? document.getElementById('jOdemeTipi').value : 'm2_bazli';
+
+            if (isTip === 'kendi_isi') {
+                const fiyat = parseFloat(document.getElementById('jFiyatKendi').value) || 0;
+                document.getElementById('jToplamKendi').textContent = formatCurrency(m2 * fiyat);
+            } else if (odemeTip === 'm2_bazli') {
+                const fiyat  = parseFloat(document.getElementById('jFiyatBizim').value) || 0;
+                document.getElementById('jToplamBizim').textContent = formatCurrency(m2 * fiyat);
+            } else {
+                const siparis  = parseFloat(document.getElementById('jSiparisTutari').value) || 0;
+                const teslimat = document.getElementById('jTeslimatTipi').value;
+                const oran     = teslimat === 'ana_firma_teslim' ? 0.3 : 0.4;
+                document.getElementById('jToplamKomisyon').textContent = formatCurrency(siparis);
+                document.getElementById('jKomisyonBizim').textContent  = formatCurrency(siparis * oran);
+            }
+        }
+
+        document.getElementById('jM2').addEventListener('input', updateCalc);
+        document.getElementById('jFiyatKendi').addEventListener('input', updateCalc);
+        document.getElementById('jFiyatBizim').addEventListener('input', updateCalc);
+        document.getElementById('jSiparisTutari').addEventListener('input', updateCalc);
+        document.getElementById('jTeslimatTipi').addEventListener('change', updateCalc);
+
+        // ── Job Modal ─────────────────────────────────────────────────────────
+        function openJobModal() {
+            document.getElementById('jobMTitle').textContent = 'Yeni İş Ekle';
+            document.getElementById('jobForm').reset();
+            document.getElementById('jobEditId').value = '';
+            document.getElementById('jTarih').value    = today();
+            if (subData.birim_fiyat > 0) {
+                document.getElementById('jFiyatKendi').value = subData.birim_fiyat;
+                document.getElementById('jFiyatBizim').value = subData.birim_fiyat;
+            }
+            switchTab('kendi_isi');
+            switchOdemeTipi('m2_bazli');
+            document.getElementById('jobModal').classList.add('show');
+        }
+
+        function editJob(id) {
+            const j = jobsData.find(x => x.id === id);
+            if (!j) return;
+            document.getElementById('jobMTitle').textContent = 'İş Düzenle';
+            document.getElementById('jobEditId').value = id;
+            document.getElementById('jTarih').value    = j.tarih;
+            document.getElementById('jM2').value       = j.metrekare;
+            document.getElementById('jAciklama').value = j.aciklama || '';
+
+            if (j.is_tipi === 'kendi_isi') {
+                document.getElementById('jFiyatKendi').value = j.birim_fiyat;
+                switchTab('kendi_isi');
+            } else {
+                document.getElementById('jFiyatBizim').value = j.birim_fiyat;
+                if (j.odeme_tipi === 'komisyon_bazli') {                    switchTab('bizim_isimiz');
+                    switchOdemeTipi('komisyon_bazli');
+                    document.getElementById('jSiparisTutari').value = j.toplam_tutar;
+                    document.getElementById('jTeslimatTipi').value  = j.teslimat_tipi || 'alt_firma_teslim';
+                } else {
+                    switchTab('bizim_isimiz');
+                    switchOdemeTipi('m2_bazli');
+                    if (j.musteri_tutari) document.getElementById('jMusteriTutari').value = j.musteri_tutari;
+                }
+            }
+            document.getElementById('jobModal').classList.add('show');
+        }
+
+        function closeJobModal() { document.getElementById('jobModal').classList.remove('show'); }
+
+        document.getElementById('jobForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id       = document.getElementById('jobEditId').value;
+            const isTip    = document.getElementById('jIsTipi').value;
+            const odemeTip = document.getElementById('jOdemeTipi').value;
+            const m2       = parseFloat(document.getElementById('jM2').value) || 0;
+
+            let data = {
+                alt_firma_id: subId,
+                is_tipi:      isTip,
+                tarih:        document.getElementById('jTarih').value,
+                metrekare:    parseFloat(document.getElementById('jM2').value),
+                aciklama:     document.getElementById('jAciklama').value.trim()
+            };
+
+            if (isTip === 'kendi_isi') {
+                data.birim_fiyat    = parseFloat(document.getElementById('jFiyatKendi').value);
+                data.odeme_tipi     = null;
+            } else if (odemeTip === 'm2_bazli') {
+                data.birim_fiyat    = parseFloat(document.getElementById('jFiyatBizim').value);
+                data.musteri_tutari = parseFloat(document.getElementById('jMusteriTutari').value) || null;
+                data.odeme_tipi     = 'm2_bazli';
+            } else {
+                // komisyon bazlı — m² ve birim fiyat yok
+                const teslimat      = document.getElementById('jTeslimatTipi').value;
+                data.birim_fiyat    = 0;
+                data.metrekare      = 0;
+                data.siparis_tutari = parseFloat(document.getElementById('jSiparisTutari').value);
+                data.teslimat_tipi  = teslimat;
+                data.komisyon_orani = teslimat === 'ana_firma_teslim' ? 0.3 : 0.4;
+                data.odeme_tipi     = 'komisyon_bazli';
+            }
+
+            const res = id ? await api.updateJob(id, data) : await api.createJob(data);
+            if (res.success) { toast(res.message || 'Kaydedildi'); closeJobModal(); loadAll(); }
+            else toast(res.errors ? (Array.isArray(res.errors) ? res.errors.join(', ') : Object.values(res.errors).join(', ')) : res.error || 'Hata', 'error');
+        });
+
+        async function delJob(id) {
+            if (!confirm('Bu iş kaydını silmek istiyor musunuz?')) return;
+            const res = await api.deleteJob(id);
+            if (res.success) { toast('Silindi'); loadAll(); }
+            else toast(res.error || 'Hata', 'error');
+        }
+
+        // ── Payment Modal ─────────────────────────────────────────────────────
+        function openPayModal() {
+            document.getElementById('payForm').reset();
+            document.getElementById('payEditId').value = '';
+            document.getElementById('pTarih').value    = today();
+
+            if (isAdmin) {
+                document.getElementById('payMTitle').textContent = 'Yeni Para Hareketi';
+                document.getElementById('pTipGroup').style.display = 'block';
+                document.getElementById('pTip').required = true;
+            } else {
+                document.getElementById('payMTitle').textContent = 'Ödeme Yap';
+                document.getElementById('pTipGroup').style.display = 'none';
+                document.getElementById('pTip').required = false;
+                document.getElementById('pTip').value = 'odeme';
+            }
+            document.getElementById('payModal').classList.add('show');
+        }
+
+        function editPay(id) {
+            const p = paysData.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('payMTitle').textContent = 'Para Hareketi Düzenle';
+            document.getElementById('payEditId').value  = id;
+            document.getElementById('pTarih').value     = p.tarih;
+            document.getElementById('pTutar').value     = p.tutar;
+            document.getElementById('pTip').value       = p.hareket_tipi;
+            document.getElementById('pAciklama').value  = p.aciklama || '';
+            document.getElementById('payModal').classList.add('show');
+        }
+
+        function closePayModal() { document.getElementById('payModal').classList.remove('show'); }
+
+        document.getElementById('payForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id      = document.getElementById('payEditId').value;
+            const tarih   = document.getElementById('pTarih').value;
+            const tutar   = parseFloat(document.getElementById('pTutar').value);
+            const tip     = document.getElementById('pTip').value;
+            const aciklama = document.getElementById('pAciklama').value.trim();
+
+            if (!isAdmin) {
+                // Firma kullanıcısı: ödeme isteği gönder
+                const res = await api.createPendingRequest({
+                    alt_firma_id: subId,
+                    istek_tipi:   'odeme',
+                    tarih,
+                    tutar,
+                    aciklama
+                });
+                if (res.success) { toast('Ödeme isteği admin onayına gönderildi'); closePayModal(); loadAll(); }
+                else toast(res.error || 'Gönderilemedi', 'error');
+                return;
+            }
+
+            // Admin: doğrudan kaydet
+            const data = { alt_firma_id: subId, tarih, tutar, hareket_tipi: tip, aciklama };
+            const res = id ? await api.updatePayment(id, data) : await api.createPayment(data);
+            if (res.success) { toast(res.message || 'Kaydedildi'); closePayModal(); loadAll(); }
+            else toast(res.errors ? res.errors.join(', ') : res.error || 'Hata', 'error');
+        });
+
+        async function delPay(id) {
+            if (!confirm('Bu hareketi silmek istiyor musunuz?')) return;
+            const res = await api.deletePayment(id);
+            if (res.success) { toast('Silindi'); loadAll(); }
+            else toast(res.error || 'Hata', 'error');
+        }
+
+        loadAll();
+    </script></body>
+</html>

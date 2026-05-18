@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürüm Notları - Alt Firma Takip</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <style>
+        body { background: #f5f7fa; }
+        .header { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 18px; color: #667eea; }
+        .btn-back { padding: 8px 16px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; }
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+        .page-title { font-size: 26px; font-weight: 700; color: #1f2937; margin-bottom: 6px; }
+        .page-sub { color: #6b7280; font-size: 14px; margin-bottom: 32px; }
+        .version-block { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 28px 32px; margin-bottom: 20px; border-left: 5px solid #667eea; }
+        .version-block.latest { border-left-color: #10b981; }
+        .version-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+        .version-num { font-size: 22px; font-weight: 800; color: #1f2937; }
+        .version-date { font-size: 13px; color: #9ca3af; background: #f3f4f6; padding: 3px 10px; border-radius: 20px; }
+        .version-badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .badge-current { background: #d1fae5; color: #065f46; }
+        .badge-stable  { background: #dbeafe; color: #1e40af; }
+        .change-list { list-style: none; padding: 0; margin: 0; }
+        .change-list li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; color: #374151; align-items: flex-start; }
+        .change-list li:last-child { border-bottom: none; }
+        .change-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+        .tag-yeni    { background: #d1fae5; color: #065f46; }
+        .tag-duzeltme { background: #fee2e2; color: #991b1b; }
+        .tag-iyilestirme { background: #dbeafe; color: #1e40af; }
+        .tag-degisiklik { background: #fef3c7; color: #92400e; }
+        .section-title { font-size: 12px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin: 14px 0 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 Sürüm Notları</h1>
+        <button class="btn-back" onclick="history.back()">← Geri Dön</button>
+    </div>
+
+    <div class="container">
+        <div class="page-title">Güncelleme Geçmişi</div>
+        <div class="page-sub">Alt Firma Takip Sistemi — tüm sürümler ve yapılan değişiklikler</div>
+
+        <!-- v1.0.1 -->
+        <div class="version-block latest">
+            <div class="version-header">
+                <span class="version-num">v1.0.1</span>
+                <span class="version-date">17 Mayıs 2026</span>
+                <span class="version-badge badge-current">Güncel Sürüm</span>
+            </div>
+
+            <div class="section-title">Yeni Özellikler</div>
+            <ul class="change-list">
+                <li><span class="change-tag tag-yeni">Yeni</span> Rol sistemi eklendi — admin ve firma olmak üzere 2 kullanıcı tipi</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Firma kullanıcısı giriş yaptığında doğrudan kendi firma sayfasına yönlendiriliyor</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Teslim onay sistemi — firma teslim işaretlediğinde admin onayına düşüyor</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Ödeme Yap — firma kullanıcısı tarih ve tutar girip admin onayına ödeme isteği gönderiyor</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Bekleyen Onaylar bölümü — admin firma detay sayfasında onay bekleyen istekleri görüyor, onayla/reddet yapabiliyor</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> İsteklerim bölümü — firma kullanıcısı gönderdiği isteklerin durumunu (beklemede/onaylandı/reddedildi) görüyor</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Çıkış Yap butonu eklendi</li>
+            </ul>
+
+            <div class="section-title">İyileştirmeler</div>
+            <ul class="change-list">
+                <li><span class="change-tag tag-iyilestirme">İyileştirme</span> Onay/reddet sonrası Bekleyen Onaylar bölümü anında güncelleniyor (optimistik güncelleme)</li>
+                <li><span class="change-tag tag-iyilestirme">İyileştirme</span> Firma kullanıcısı için düzenle/sil butonları gizleniyor</li>
+                <li><span class="change-tag tag-iyilestirme">İyileştirme</span> "Bitmiş İşleri Gizle" butonu yeniden eklendi</li>
+            </ul>
+
+            <div class="section-title">Değişiklikler</div>
+            <ul class="change-list">
+                <li><span class="change-tag tag-degisiklik">Değişiklik</span> "Kendi İşleri" → "Kendi İşlerim" olarak güncellendi</li>
+                <li><span class="change-tag tag-degisiklik">Değişiklik</span> "Bizim İşlerimiz" → "Firma İşleri" olarak güncellendi</li>
+                <li><span class="change-tag tag-degisiklik">Değişiklik</span> Bakiye kartı etiketleri yeni isimlendirmeye göre düzenlendi</li>
+            </ul>
+
+            <div class="section-title">Düzeltmeler</div>
+            <ul class="change-list">
+                <li><span class="change-tag tag-duzeltme">Düzeltme</span> 409 Conflict hatası — zaten işlenmiş isteklerde sayfa artık otomatik güncelleniyor</li>
+                <li><span class="change-tag tag-duzeltme">Düzeltme</span> rol/role kolon uyumsuzluğu — eski ve yeni kolon adı her iki yerde de destekleniyor</li>
+            </ul>
+        </div>
+
+        <!-- v1.0.0 -->
+        <div class="version-block">
+            <div class="version-header">
+                <span class="version-num">v1.0.0</span>
+                <span class="version-date">Mayıs 2026</span>
+                <span class="version-badge badge-stable">İlk Sürüm</span>
+            </div>
+
+            <ul class="change-list">
+                <li><span class="change-tag tag-yeni">Yeni</span> Alt firma listesi ve yönetimi</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Yıkama işleri takibi — kendi işleri ve firma işleri (m² bazlı / komisyon bazlı)</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Para hareketleri — ödeme ve bakiye ekleme</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> Bakiye göstergesi — borç/alacak durumu</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> JWT tabanlı kimlik doğrulama sistemi</li>
+                <li><span class="change-tag tag-yeni">Yeni</span> PWA desteği — mobil uyumlu arayüz</li>
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>
