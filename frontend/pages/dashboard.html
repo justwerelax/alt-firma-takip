@@ -68,9 +68,60 @@
         .toast.error   { border-left: 4px solid #ef4444; }
         @media (max-width: 768px) {
             .header { padding: 0 16px; }
-            .summary-cards { grid-template-columns: 1fr; }
+            .summary-cards { grid-template-columns: 1fr 1fr; }
             .sec-header { flex-direction: column; align-items: stretch; gap: 10px; }
             .fg-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .summary-cards { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .table-wrap { background: transparent; box-shadow: none; overflow-x: unset; border-radius: 0; }
+            .table-wrap table { min-width: unset; }
+            .table-wrap thead { display: none; }
+            .table-wrap tbody tr {
+                display: block;
+                background: white;
+                border-radius: 12px;
+                margin-bottom: 12px;
+                padding: 16px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+            .table-wrap tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0;
+                border: none !important;
+                font-size: 13px;
+                gap: 8px;
+            }
+            .table-wrap tbody td::before {
+                content: attr(data-label);
+                font-size: 11px;
+                font-weight: 700;
+                color: #9ca3af;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                flex-shrink: 0;
+                min-width: 80px;
+            }
+            .table-wrap tbody td[data-label=""]::before { display: none; }
+            .table-wrap tbody td:empty { display: none; }
+            /* Mobilde daha az önemli kolonları gizle */
+            .table-wrap tbody td[data-label="Birim Fiyat"],
+            .table-wrap tbody td[data-label="Komisyon"] { display: none; }
+            /* Bakiye öne çıksın */
+            .table-wrap tbody td[data-label="Bakiye"] {
+                font-size: 18px;
+                font-weight: 700;
+                border-top: 1px solid #f3f4f6;
+                margin-top: 6px;
+                padding-top: 10px;
+            }
+            /* Butonlar alt alta */
+            .table-wrap tbody td[data-label=""] .actions { flex-wrap: wrap; gap: 6px; }
+            .table-wrap tbody td[data-label=""] .btn-sm { flex: 1; text-align: center; padding: 8px; }
         }
     </style>
 </head>
@@ -78,7 +129,7 @@
     <div class="header">
         <h1>🧹 Alt Firma Takip</h1>
         <div style="display:flex;gap:8px;">
-            <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.1</button>
+            <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.2</button>
             <button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
         </div>
     </div>
@@ -207,13 +258,13 @@
                     const balText  = (bal > 0 ? '+' : bal < 0 ? '-' : '') + formatCurrency(Math.abs(bal));
                     const komisyon = parseFloat(s.komisyon_orani) * 100;
                     return `<tr>
-                        <td><strong>${s.ad}</strong></td>
-                        <td>${s.telefon || '-'}</td>
-                        <td>${s.birim_fiyat > 0 ? formatCurrency(s.birim_fiyat) + '/m²' : '-'}</td>
-                        <td>%${komisyon.toFixed(0)}</td>
-                        <td><span class="badge badge-${s.durum}">${s.durum === 'aktif' ? 'Aktif' : 'Pasif'}</span></td>
-                        <td class="${balClass}" style="font-weight:600;">${balText}</td>
-                        <td><div class="actions">
+                        <td data-label="Firma"><strong>${s.ad}</strong></td>
+                        <td data-label="Telefon">${s.telefon || '-'}</td>
+                        <td data-label="Birim Fiyat">${s.birim_fiyat > 0 ? formatCurrency(s.birim_fiyat) + '/m²' : '-'}</td>
+                        <td data-label="Komisyon">%${komisyon.toFixed(0)}</td>
+                        <td data-label="Durum"><span class="badge badge-${s.durum}">${s.durum === 'aktif' ? 'Aktif' : 'Pasif'}</span></td>
+                        <td data-label="Bakiye" class="${balClass}" style="font-weight:600;">${balText}</td>
+                        <td data-label=""><div class="actions">
                             <button class="btn-sm btn-detail" onclick="location.href='subcontractor.html?id=${s.id}'">Detay</button>
                             <button class="btn-sm btn-edit"   onclick="openEdit(${s.id})">Düzenle</button>
                             <button class="btn-sm btn-toggle" onclick="toggleStatus(${s.id})">${s.durum === 'aktif' ? 'Pasifleştir' : 'Aktifleştir'}</button>
