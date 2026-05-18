@@ -15,7 +15,7 @@ class Subcontractor
     {
         try {
             $stmt = $this->db->query("
-                SELECT id, ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum, created_at, updated_at
+                SELECT id, ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum, logo_url, created_at, updated_at
                 FROM alt_firma
                 ORDER BY ad ASC
             ");
@@ -30,7 +30,7 @@ class Subcontractor
     {
         try {
             $stmt = $this->db->prepare("
-                SELECT id, ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum, created_at, updated_at
+                SELECT id, ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum, logo_url, created_at, updated_at
                 FROM alt_firma
                 WHERE id = :id
                 LIMIT 1
@@ -48,8 +48,8 @@ class Subcontractor
     {
         try {
             $stmt = $this->db->prepare("
-                INSERT INTO alt_firma (ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum)
-                VALUES (:ad, :telefon, :adres, :notlar, :birim_fiyat, :komisyon_orani, 'aktif')
+                INSERT INTO alt_firma (ad, telefon, adres, notlar, birim_fiyat, komisyon_orani, durum, logo_url)
+                VALUES (:ad, :telefon, :adres, :notlar, :birim_fiyat, :komisyon_orani, 'aktif', :logo_url)
             ");
             $stmt->execute([
                 'ad'             => $data['ad'],
@@ -58,6 +58,7 @@ class Subcontractor
                 'notlar'         => $data['notlar'] ?? null,
                 'birim_fiyat'    => $data['birim_fiyat'] ?? 0,
                 'komisyon_orani' => $data['komisyon_orani'] ?? 0.4000,
+                'logo_url'       => $data['logo_url'] ?? null,
             ]);
             return $this->db->lastInsertId();
         } catch (PDOException $e) {
@@ -76,7 +77,8 @@ class Subcontractor
                     adres = :adres,
                     notlar = :notlar,
                     birim_fiyat = :birim_fiyat,
-                    komisyon_orani = :komisyon_orani
+                    komisyon_orani = :komisyon_orani,
+                    logo_url = :logo_url
                 WHERE id = :id
             ");
             return $stmt->execute([
@@ -87,6 +89,7 @@ class Subcontractor
                 'notlar'         => $data['notlar'] ?? null,
                 'birim_fiyat'    => $data['birim_fiyat'] ?? 0,
                 'komisyon_orani' => $data['komisyon_orani'] ?? 0.4000,
+                'logo_url'       => $data['logo_url'] ?? null,
             ]);
         } catch (PDOException $e) {
             error_log("Subcontractor update error: " . $e->getMessage());

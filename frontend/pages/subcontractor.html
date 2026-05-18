@@ -15,7 +15,9 @@
         .btn-back { padding: 8px 16px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; }
         .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
         .info-card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .firm-name { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .firm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .firm-logo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #e5e7eb; flex-shrink: 0; }
+        .firm-name { font-size: 24px; font-weight: 700; }
         .firm-meta { display: flex; gap: 20px; color: #6b7280; font-size: 14px; margin-bottom: 20px; flex-wrap: wrap; }
         /* Göstergeler */
         .balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; }
@@ -164,17 +166,22 @@
             .sec-hdr-bizim .sec-hdr-label { background: #dbeafe; color: #1d4ed8; font-size: 13px; padding: 5px 18px; }
 
             /* Kart bölüm renkleri */
-            .tw tbody tr.row-kendi { background: #faf7ff !important; }
-            .tw tbody tr.row-kendi.card-open { background: #f3eeff !important; }
+            .tw tbody tr.row-kendi { background: #fffbeb !important; }
+            .tw tbody tr.row-kendi.card-open { background: #fef3c7 !important; }
             .tw tbody tr.row-bizim { background: #f0f7ff !important; }
             .tw tbody tr.row-bizim.card-open { background: #e4f0ff !important; }
 
             /* Firma adı — ortalı, daha küçük */
+            .firm-header { justify-content: center; }
             .firm-name { font-size: 18px !important; text-align: center; }
             .firm-meta { justify-content: center; }
 
-            /* Bölüm başlıkları ortalı */
-            .sec-hd { text-align: center; }
+            /* Bölüm başlıkları ortalı + kart görünümü */
+            .sec-hd {
+                background: white; border-radius: 10px;
+                padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+                margin-bottom: 10px; text-align: center; gap: 8px;
+            }
             .sec-hd h2 { font-size: 15px; }
             .pending-sec h2 { text-align: center; }
             .stats-toggle-btn { justify-content: center; gap: 8px; }
@@ -248,7 +255,7 @@
         <h1>Alt Firma Detay</h1>
         <div style="display:flex;gap:8px;">
             <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
-            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.1.1</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.2.0</button>
             <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
         </div>
     </div>
@@ -265,7 +272,10 @@
 
             <!-- Firma Bilgisi -->
             <div class="info-card">
-                <div class="firm-name" id="firmName"></div>
+                <div class="firm-header">
+                    <img id="firmLogo" class="firm-logo" src="" alt="" style="display:none;" onerror="this.style.display='none'">
+                    <div class="firm-name" id="firmName"></div>
+                </div>
                 <div class="firm-meta">
                     <span id="firmPhone"></span>
                     <span id="firmAddr"></span>
@@ -519,6 +529,11 @@
                 document.getElementById('firmName').textContent = subData.ad;
                 document.getElementById('firmPhone').textContent = subData.telefon ? '📞 ' + subData.telefon : '';
                 document.getElementById('firmAddr').textContent  = subData.adres   ? '📍 ' + subData.adres   : '';
+                if (subData.logo_url) {
+                    const logo = document.getElementById('firmLogo');
+                    logo.src = subData.logo_url;
+                    logo.style.display = 'block';
+                }
 
                 // Göstergeler
                 const kendi   = parseFloat(sum.kendi_isleri_toplam    || 0);

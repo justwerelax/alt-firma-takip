@@ -129,7 +129,7 @@
     <div class="header">
         <h1>🧹 Alt Firma Takip</h1>
         <div style="display:flex;gap:8px;">
-            <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.1.1</button>
+            <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.2.0</button>
             <button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
         </div>
     </div>
@@ -200,6 +200,7 @@
                 </div>
                 <div class="fg"><label>Adres</label><textarea id="fAdres" placeholder="Adres"></textarea></div>
                 <div class="fg"><label>Notlar</label><textarea id="fNotlar" placeholder="Notlar"></textarea></div>
+                <div class="fg"><label>Logo URL</label><input type="url" id="fLogoUrl" placeholder="https://...logo.png"><div class="fg-hint">Firma logosunun tam URL adresi (opsiyonel)</div></div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal()">İptal</button>
                     <button type="submit" class="btn-save">Kaydet</button>
@@ -257,8 +258,11 @@
                     const balClass = bal > 0 ? 'c-green' : bal < 0 ? 'c-red' : '';
                     const balText  = (bal > 0 ? '+' : bal < 0 ? '-' : '') + formatCurrency(Math.abs(bal));
                     const komisyon = parseFloat(s.komisyon_orani) * 100;
+                    const logoHtml = s.logo_url
+                        ? `<img src="${s.logo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:7px;vertical-align:middle;border:1px solid #e5e7eb;" onerror="this.style.display='none'">`
+                        : '';
                     return `<tr>
-                        <td data-label="Firma"><strong>${s.ad}</strong></td>
+                        <td data-label="Firma"><strong>${logoHtml}${s.ad}</strong></td>
                         <td data-label="Telefon">${s.telefon || '-'}</td>
                         <td data-label="Birim Fiyat">${s.birim_fiyat > 0 ? formatCurrency(s.birim_fiyat) + '/m²' : '-'}</td>
                         <td data-label="Komisyon">%${komisyon.toFixed(0)}</td>
@@ -296,6 +300,7 @@
             document.getElementById('fKomisyonOrani').value   = s.komisyon_orani || '0.4';
             document.getElementById('fAdres').value           = s.adres || '';
             document.getElementById('fNotlar').value          = s.notlar || '';
+            document.getElementById('fLogoUrl').value         = s.logo_url || '';
             document.getElementById('modal').classList.add('show');
         }
 
@@ -327,7 +332,8 @@
                 birim_fiyat:    parseFloat(document.getElementById('fBirimFiyat').value) || 0,
                 komisyon_orani: parseFloat(document.getElementById('fKomisyonOrani').value),
                 adres:          document.getElementById('fAdres').value.trim(),
-                notlar:         document.getElementById('fNotlar').value.trim()
+                notlar:         document.getElementById('fNotlar').value.trim(),
+                logo_url:       document.getElementById('fLogoUrl').value.trim() || null
             };
             const res = id ? await api.updateSubcontractor(id, data) : await api.createSubcontractor(data);
             if (res.success) { toast(res.message || 'Kaydedildi'); closeModal(); loadData(); }
