@@ -159,9 +159,25 @@
             .tw tbody tr.sec-hdr td::before { display: none !important; }
             .sec-hdr-label { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
             .sec-hdr-kendi td { background: transparent !important; }
-            .sec-hdr-kendi .sec-hdr-label { background: #ede9fe; color: #5b21b6; }
+            .sec-hdr-kendi .sec-hdr-label { background: #ede9fe; color: #5b21b6; font-size: 13px; padding: 5px 18px; }
             .sec-hdr-bizim td { background: transparent !important; }
-            .sec-hdr-bizim .sec-hdr-label { background: #dbeafe; color: #1d4ed8; }
+            .sec-hdr-bizim .sec-hdr-label { background: #dbeafe; color: #1d4ed8; font-size: 13px; padding: 5px 18px; }
+
+            /* Kart bölüm renkleri */
+            .tw tbody tr.row-kendi { background: #faf7ff !important; }
+            .tw tbody tr.row-kendi.card-open { background: #f3eeff !important; }
+            .tw tbody tr.row-bizim { background: #f0f7ff !important; }
+            .tw tbody tr.row-bizim.card-open { background: #e4f0ff !important; }
+
+            /* Firma adı — ortalı, daha küçük */
+            .firm-name { font-size: 18px !important; text-align: center; }
+            .firm-meta { justify-content: center; }
+
+            /* Bölüm başlıkları ortalı */
+            .sec-hd { text-align: center; }
+            .sec-hd h2 { font-size: 15px; }
+            .pending-sec h2 { text-align: center; }
+            .stats-toggle-btn { justify-content: center; gap: 8px; }
 
             /* KAPALI KART: sadece özet görünür, detaylar gizli */
             .card-summary {
@@ -232,7 +248,7 @@
         <h1>Alt Firma Detay</h1>
         <div style="display:flex;gap:8px;">
             <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
-            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.1.0</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.1.1</button>
             <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
         </div>
     </div>
@@ -589,7 +605,7 @@
 
             let html = '';
 
-            function jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText) {
+            function jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText, rowClass = '') {
                 const teslim       = parseInt(j.teslim_edildi) === 1;
                 const hasPending   = pendingData.some(p => p.is_id == j.id && p.istek_tipi === 'teslim' && p.durum === 'beklemede');
                 const rowStyle     = teslim ? 'background:#f0fdf4;' : '';
@@ -615,7 +631,7 @@
                        </div>`
                     : '';
 
-                return `<tr style="${rowStyle}" onclick="toggleCard(this,event)">
+                return `<tr class="${rowClass}" style="${rowStyle}" onclick="toggleCard(this,event)">
                     <td class="card-summary">
                         <span class="cs-desc" style="${textStyle}">${j.aciklama || '-'}</span>
                         <span class="cs-amt" style="color:${teslim ? '#9ca3af' : borcRenk};${teslim ? 'text-decoration:line-through;' : ''}">${borcPrefix}${formatCurrency(borcTutar)}</span>
@@ -642,7 +658,7 @@
                             <button class="btn-sm btn-del"  onclick="delJob(${j.id})">Sil</button>
                           </div>`
                         : '';
-                    html += `<tr onclick="toggleCard(this,event)">
+                    html += `<tr class="row-kendi" onclick="toggleCard(this,event)">
                         <td class="card-summary">
                             <span class="cs-desc">${j.aciklama || '-'}</span>
                             <span class="cs-amt" style="color:#5b21b6;">${formatCurrency(j.toplam_tutar)}</span>
@@ -684,7 +700,7 @@
                         borcPrefix   = '';
                         teslimatText = `Alt Firma Teslim (%${(100-oran).toFixed(0)} bize)`;
                     }
-                    html += jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText);
+                    html += jobRow(j, borcTutar, borcRenk, borcPrefix, teslimatText, 'row-bizim');
                 });
             }
 
