@@ -118,9 +118,12 @@
         .sec-hdr-kendi td { background: #f3f0ff; color: #5b21b6; padding: 10px 14px; font-weight: 700; font-size: 13px; }
         .sec-hdr-bizim td { background: #eff6ff; color: #1d4ed8; padding: 10px 14px; font-weight: 700; font-size: 13px; }
 
-        /* Kart tıklama aksiyonları */
+        /* Kart tıklama */
         .tw tbody tr { cursor: pointer; }
         .tw tbody tr.sec-hdr { cursor: default; }
+
+        /* Desktop: özet satırı gizli */
+        .card-summary { display: none; }
 
         /* İstatistik toggle butonu */
         .stats-toggle-btn { display: none; }
@@ -128,115 +131,89 @@
         @media (max-width: 640px) {
             /* İstatistik toggle */
             .stats-toggle-btn {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-                padding: 11px 16px;
-                background: white;
-                border: none;
-                border-radius: 10px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-                font-size: 13px;
-                font-weight: 600;
-                color: #374151;
-                cursor: pointer;
-                margin-bottom: 8px;
-                font-family: inherit;
+                display: flex; align-items: center; justify-content: space-between;
+                width: 100%; padding: 11px 16px; background: white; border: none;
+                border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+                font-size: 13px; font-weight: 600; color: #374151;
+                cursor: pointer; margin-bottom: 8px; font-family: inherit;
             }
             .stats-wrap .stats { display: none; }
             .stats-wrap .stats.open { display: grid; grid-template-columns: 1fr 1fr; }
 
-            /* Tablo kart görünümü */
+            /* Tablo → kart */
             .tw { background: transparent; box-shadow: none; overflow-x: unset; border-radius: 0; }
             .tw table { min-width: unset; }
             .tw thead { display: none; }
             .tw tbody tr {
-                display: block;
-                background: white;
-                border-radius: 10px;
-                margin-bottom: 6px;
-                padding: 10px 12px;
+                display: block; background: white; border-radius: 10px;
+                margin-bottom: 6px; padding: 10px 12px;
                 box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             }
 
-            /* Bölüm başlıkları — ortalı pill etiket */
+            /* Bölüm başlığı — ortalı pill */
             .tw tbody tr.sec-hdr {
-                background: transparent !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-                margin-top: 14px;
-                margin-bottom: 3px;
-                text-align: center;
+                background: transparent !important; box-shadow: none !important;
+                padding: 0 !important; margin-top: 14px; margin-bottom: 3px; text-align: center;
             }
-            .tw tbody tr.sec-hdr td {
-                display: block !important;
-                background: transparent !important;
-                padding: 0 !important;
-                border: none !important;
-            }
+            .tw tbody tr.sec-hdr td { display: block !important; background: transparent !important; padding: 0 !important; border: none !important; }
             .tw tbody tr.sec-hdr td::before { display: none !important; }
-            .sec-hdr-label {
-                display: inline-block;
-                padding: 4px 14px;
-                border-radius: 20px;
-                font-size: 11px;
-                font-weight: 800;
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-            }
+            .sec-hdr-label { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
             .sec-hdr-kendi td { background: transparent !important; }
             .sec-hdr-kendi .sec-hdr-label { background: #ede9fe; color: #5b21b6; }
             .sec-hdr-bizim td { background: transparent !important; }
             .sec-hdr-bizim .sec-hdr-label { background: #dbeafe; color: #1d4ed8; }
 
-            /* Normal kart satırları */
-            .tw tbody td {
-                display: flex;
+            /* KAPALI KART: sadece özet görünür, detaylar gizli */
+            .card-summary {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                border: none !important;
+            }
+            .card-summary::before { display: none !important; }
+            .card-summary .cs-desc {
+                font-size: 13px; color: #374151;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;
+            }
+            .card-summary .cs-amt { font-size: 14px; font-weight: 700; white-space: nowrap; }
+            .card-detail { display: none !important; }
+
+            /* AÇIK KART: özet gizli, detaylar görünür */
+            .tw tbody tr.card-open { background: #f9f8ff !important; box-shadow: 0 2px 10px rgba(102,126,234,0.15) !important; }
+            .tw tbody tr.card-open .card-summary { display: none !important; }
+            .tw tbody tr.card-open .card-detail {
+                display: flex !important;
                 justify-content: space-between;
                 align-items: center;
                 padding: 3px 0;
                 border: none !important;
                 font-size: 12px;
                 gap: 8px;
-                text-decoration: inherit;
             }
-            .tw tbody td::before {
+            .tw tbody tr.card-open .card-detail::before {
                 content: attr(data-label);
-                font-size: 10px;
-                font-weight: 700;
-                color: #9ca3af;
-                text-transform: uppercase;
-                letter-spacing: 0.04em;
-                flex-shrink: 0;
-                min-width: 60px;
+                font-size: 10px; font-weight: 700; color: #9ca3af;
+                text-transform: uppercase; letter-spacing: 0.04em;
+                flex-shrink: 0; min-width: 60px;
             }
-            .tw tbody td[data-label=""]::before { display: none; }
-            .tw tbody td:empty { display: none; }
+            .tw tbody tr.card-open .card-detail[data-label=""]::before { display: none; }
+            .tw tbody tr.card-open .card-detail:empty { display: none !important; }
 
-            /* Gizlenen kolonlar */
-            .tw tbody td[data-label="m²"],
-            .tw tbody td[data-label="Birim"],
-            .tw tbody td[data-label="Toplam"],
-            .tw tbody td[data-label="Teslim"] { display: none; }
+            /* Açık kartta gizli kolonlar */
+            .tw tbody tr.card-open .card-detail[data-label="m²"],
+            .tw tbody tr.card-open .card-detail[data-label="Birim"],
+            .tw tbody tr.card-open .card-detail[data-label="Teslim"] { display: none !important; }
 
-            /* Borç satırı büyük ve belirgin */
-            .tw tbody td[data-label="Borç"] {
-                font-size: 15px;
-                font-weight: 700;
-                border-top: 1px solid #f3f4f6 !important;
-                margin-top: 4px;
-                padding-top: 7px;
+            /* Borç öne çıksın */
+            .tw tbody tr.card-open .card-detail[data-label="Borç"] {
+                font-size: 15px; font-weight: 700;
+                border-top: 1px solid #e5e7eb !important;
+                margin-top: 4px; padding-top: 7px;
             }
 
-            /* Aksiyon td varsayılan gizli */
-            .tw tbody td[data-label=""] { display: none !important; }
-            /* Kart açıkken aksiyonlar görünür */
-            .tw tbody tr.card-open {
-                background: #f5f3ff !important;
-                box-shadow: 0 2px 12px rgba(102,126,234,0.18) !important;
-            }
-            .tw tbody tr.card-open td[data-label=""] {
+            /* Aksiyon butonu satırı */
+            .tw tbody tr.card-open .card-actions {
                 display: flex !important;
                 justify-content: flex-end;
                 gap: 8px;
@@ -244,9 +221,6 @@
                 margin-top: 4px;
                 border-top: 1px solid #e5e7eb !important;
             }
-
-            /* Para hareketleri açıklama gizle */
-            #payTbody td[data-label="Açıklama"] { display: none; }
 
             .balance-grid { grid-template-columns: 1fr 1fr; }
             .pending-item { flex-direction: column; align-items: flex-start; }
@@ -258,7 +232,7 @@
         <h1>Alt Firma Detay</h1>
         <div style="display:flex;gap:8px;">
             <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
-            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.0.4</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.1.0</button>
             <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
         </div>
     </div>
@@ -642,15 +616,19 @@
                     : '';
 
                 return `<tr style="${rowStyle}" onclick="toggleCard(this,event)">
-                    <td data-label="">${checkboxCell}</td>
-                    <td data-label="Açıklama" style="${textStyle}">${j.aciklama || '-'}</td>
-                    <td data-label="Tarih" style="${textStyle}">${formatDate(j.tarih)}</td>
-                    <td data-label="m²" style="${textStyle}">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
-                    <td data-label="Birim" style="${textStyle}">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
-                    <td data-label="Toplam" style="${textStyle}">${formatCurrency(j.toplam_tutar)}</td>
-                    <td data-label="Teslim" style="${textStyle}">${teslimatText}</td>
-                    <td data-label="Borç" style="font-weight:700;color:${teslim ? '#9ca3af' : borcRenk};${teslim ? 'text-decoration:line-through;' : ''}">${borcPrefix}${formatCurrency(borcTutar)}</td>
-                    <td data-label="">${islemler}</td>
+                    <td class="card-summary">
+                        <span class="cs-desc" style="${textStyle}">${j.aciklama || '-'}</span>
+                        <span class="cs-amt" style="color:${teslim ? '#9ca3af' : borcRenk};${teslim ? 'text-decoration:line-through;' : ''}">${borcPrefix}${formatCurrency(borcTutar)}</span>
+                    </td>
+                    <td class="card-detail" data-label="">${checkboxCell}</td>
+                    <td class="card-detail" data-label="Açıklama" style="${textStyle}">${j.aciklama || '-'}</td>
+                    <td class="card-detail" data-label="Tarih" style="${textStyle}">${formatDate(j.tarih)}</td>
+                    <td class="card-detail" data-label="m²" style="${textStyle}">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
+                    <td class="card-detail" data-label="Birim" style="${textStyle}">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
+                    <td class="card-detail" data-label="Toplam" style="${textStyle}">${formatCurrency(j.toplam_tutar)}</td>
+                    <td class="card-detail" data-label="Teslim" style="${textStyle}">${teslimatText}</td>
+                    <td class="card-detail" data-label="Borç" style="font-weight:700;color:${teslim ? '#9ca3af' : borcRenk};${teslim ? 'text-decoration:line-through;' : ''}">${borcPrefix}${formatCurrency(borcTutar)}</td>
+                    <td class="card-detail card-actions" data-label="">${islemler}</td>
                 </tr>`;
             }
 
@@ -665,15 +643,19 @@
                           </div>`
                         : '';
                     html += `<tr onclick="toggleCard(this,event)">
-                        <td data-label=""></td>
-                        <td data-label="Açıklama">${j.aciklama || '-'}</td>
-                        <td data-label="Tarih">${formatDate(j.tarih)}</td>
-                        <td data-label="m²">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
-                        <td data-label="Birim">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
-                        <td data-label="Toplam">${formatCurrency(j.toplam_tutar)}</td>
-                        <td data-label="Teslim">-</td>
-                        <td data-label="Borç" style="font-weight:700;color:#5b21b6;">${formatCurrency(j.toplam_tutar)}</td>
-                        <td data-label="">${islemler}</td>
+                        <td class="card-summary">
+                            <span class="cs-desc">${j.aciklama || '-'}</span>
+                            <span class="cs-amt" style="color:#5b21b6;">${formatCurrency(j.toplam_tutar)}</span>
+                        </td>
+                        <td class="card-detail" data-label=""></td>
+                        <td class="card-detail" data-label="Açıklama">${j.aciklama || '-'}</td>
+                        <td class="card-detail" data-label="Tarih">${formatDate(j.tarih)}</td>
+                        <td class="card-detail" data-label="m²">${parseFloat(j.metrekare) > 0 ? parseFloat(j.metrekare).toFixed(2) : '-'}</td>
+                        <td class="card-detail" data-label="Birim">${parseFloat(j.birim_fiyat) > 0 ? formatCurrency(j.birim_fiyat) : '-'}</td>
+                        <td class="card-detail" data-label="Toplam">${formatCurrency(j.toplam_tutar)}</td>
+                        <td class="card-detail" data-label="Teslim">-</td>
+                        <td class="card-detail" data-label="Borç" style="font-weight:700;color:#5b21b6;">${formatCurrency(j.toplam_tutar)}</td>
+                        <td class="card-detail card-actions" data-label="">${islemler}</td>
                     </tr>`;
                 });
             }
@@ -757,12 +739,18 @@
                         <button class="btn-sm btn-del"  onclick="delPay(${p.id})">Sil</button>
                        </div>`
                     : '';
-                return `<tr>
-                    <td data-label="Tarih">${formatDate(p.tarih)}</td>
-                    <td data-label="Tutar" style="font-weight:600;">${formatCurrency(p.tutar)}</td>
-                    <td data-label="Tip">${p.hareket_tipi === 'odeme' ? '💸 Ödeme' : '➕ Bakiye Ekle'}</td>
-                    <td data-label="Açıklama">${p.aciklama || '-'}</td>
-                    <td data-label="">${islemler}</td>
+                const tipLabel = p.hareket_tipi === 'odeme' ? '💸 Ödeme' : '➕ Bakiye Ekle';
+                const amtColor = p.hareket_tipi === 'odeme' ? '#ef4444' : '#10b981';
+                return `<tr onclick="toggleCard(this,event)">
+                    <td class="card-summary">
+                        <span class="cs-desc">${formatDate(p.tarih)} · ${tipLabel}</span>
+                        <span class="cs-amt" style="color:${amtColor};">${formatCurrency(p.tutar)}</span>
+                    </td>
+                    <td class="card-detail" data-label="Tarih">${formatDate(p.tarih)}</td>
+                    <td class="card-detail" data-label="Tutar" style="font-weight:600;color:${amtColor};">${formatCurrency(p.tutar)}</td>
+                    <td class="card-detail" data-label="Tip">${tipLabel}</td>
+                    <td class="card-detail" data-label="Açıklama">${p.aciklama || '-'}</td>
+                    <td class="card-detail card-actions" data-label="">${islemler}</td>
                 </tr>`;
             }).join('');
         }
