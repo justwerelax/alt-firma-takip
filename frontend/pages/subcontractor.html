@@ -283,11 +283,11 @@
                 <!-- Göstergeler -->
                 <div class="balance-grid">
                     <div class="bal-item kendi">
-                        <div class="bi-lbl">🔵 Kendi İşlerim Bakiyesi</div>
+                        <div class="bi-lbl" id="lblKendi">🔵 Kendi İşlerim Bakiyesi</div>
                         <div class="bi-val" id="balKendi">0 ₺</div>
                     </div>
                     <div class="bal-item bizim">
-                        <div class="bi-lbl">🟢 Firma İşleri Bakiyesi</div>
+                        <div class="bi-lbl" id="lblBizim">🟢 Firma İşleri Bakiyesi</div>
                         <div class="bi-val" id="balBizim">0 ₺</div>
                     </div>
                     <div class="bal-item" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd);">
@@ -493,11 +493,15 @@
         function applyRoleUI() {
             if (isAdmin) {
                 document.getElementById('pendingSec').style.display = 'block';
+                document.getElementById('lblKendi').textContent = '🔵 Kendi İşleri Bakiyesi';
+                document.getElementById('lblBizim').textContent = '🟢 Bizim İşlerimiz Bakiyesi';
             } else {
                 // Firma kullanıcısı: Geri Dön gizle, butonları güncelle
                 document.querySelector('.btn-back').style.display = 'none';
                 document.getElementById('addJobBtn').style.display = 'none';
                 document.getElementById('payBtn').textContent = '💸 Ödeme Yap';
+                document.getElementById('lblKendi').textContent = '🔵 Kendi İşlerim Bakiyesi';
+                document.getElementById('lblBizim').textContent = '🟢 Firma İşleri Bakiyesi';
             }
         }
 
@@ -652,7 +656,7 @@
 
             // Kendi İşlerim — tik yok
             if (kendiIsleri.length > 0) {
-                html += `<tr class="sec-hdr sec-hdr-kendi"><td colspan="9"><span class="sec-hdr-label">🔵 Kendi İşlerim</span></td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-kendi"><td colspan="9"><span class="sec-hdr-label">🔵 ${isAdmin ? 'Kendi İşleri' : 'Kendi İşlerim'}</span></td></tr>`;
                 kendiIsleri.forEach(j => {
                     const islemler = isAdmin
                         ? `<div class="actions">
@@ -676,7 +680,7 @@
 
             // Firma İşleri — tik var
             if (bizimIsler.length > 0) {
-                html += `<tr class="sec-hdr sec-hdr-bizim"><td colspan="9"><span class="sec-hdr-label">🟢 Firma İşleri</span></td></tr>`;
+                html += `<tr class="sec-hdr sec-hdr-bizim"><td colspan="9"><span class="sec-hdr-label">🟢 ${isAdmin ? 'Bizim İşlerimiz' : 'Firma İşleri'}</span></td></tr>`;
                 bizimIsler.forEach(j => {
                     const isM2  = j.odeme_tipi === 'm2_bazli';
                     const isAna = j.teslimat_tipi === 'ana_firma_teslim';
