@@ -665,3 +665,128 @@ tbody tr:last-child td {
         padding: 16px;
     }
 }
+
+/* ==================== Dark Mode ==================== */
+[data-theme="dark"] body { background: #111827 !important; color: #e5e7eb !important; }
+[data-theme="dark"] h1,[data-theme="dark"] h2,[data-theme="dark"] h3 { color: #f9fafb !important; }
+
+/* Header */
+[data-theme="dark"] .header,
+[data-theme="dark"] .app-header { background: #1f2937 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important; }
+[data-theme="dark"] .header h1 { color: #818cf8 !important; }
+
+/* Kartlar ve konteynerler */
+[data-theme="dark"] .info-card,
+[data-theme="dark"] .s-card,
+[data-theme="dark"] .stat,
+[data-theme="dark"] .pending-sec,
+[data-theme="dark"] .card,
+[data-theme="dark"] .tw,
+[data-theme="dark"] .table-wrap,
+[data-theme="dark"] .table-wrapper { background: #1f2937 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important; }
+[data-theme="dark"] .sec-hd { background: #1f2937 !important; color: #f9fafb !important; }
+[data-theme="dark"] .stats-toggle-btn { background: #1f2937 !important; color: #e5e7eb !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important; }
+
+/* Tablo */
+[data-theme="dark"] thead { background: #111827 !important; }
+[data-theme="dark"] th { color: #9ca3af !important; border-bottom-color: #374151 !important; }
+[data-theme="dark"] td { border-bottom-color: #374151 !important; color: #e5e7eb !important; }
+[data-theme="dark"] tbody tr:hover { background: #2d3748 !important; }
+[data-theme="dark"] .table-wrap tbody tr { background: #1f2937 !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important; }
+
+/* İş satırı renkleri */
+[data-theme="dark"] .tw tbody tr.row-kendi { background: #2d2b1a !important; }
+[data-theme="dark"] .tw tbody tr.row-kendi.card-open { background: #3d3920 !important; }
+[data-theme="dark"] .tw tbody tr.row-bizim { background: #1a2535 !important; }
+[data-theme="dark"] .tw tbody tr.row-bizim.card-open { background: #1e2d40 !important; }
+[data-theme="dark"] .tw tbody tr.card-open { background: #252d3d !important; box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important; }
+[data-theme="dark"] .tw tbody tr.card-open .card-detail::before { color: #6b7280 !important; }
+[data-theme="dark"] .tw tbody tr.card-open .card-detail[data-label="Borç"] { border-top-color: #374151 !important; }
+[data-theme="dark"] .tw tbody tr.card-open .card-actions { border-top-color: #374151 !important; }
+
+/* Bölüm başlıkları (tablo içi) */
+[data-theme="dark"] .sec-hdr-kendi td { background: #1e1a3a !important; }
+[data-theme="dark"] .sec-hdr-bizim td { background: #0f1e35 !important; }
+[data-theme="dark"] .sec-hdr-kendi .sec-hdr-label { background: #312e81 !important; color: #c4b5fd !important; }
+[data-theme="dark"] .sec-hdr-bizim .sec-hdr-label { background: #1e3a6e !important; color: #93c5fd !important; }
+
+/* Bakiye kartları */
+[data-theme="dark"] .bal-item.kendi { background: linear-gradient(135deg,#312e81,#3730a3) !important; }
+[data-theme="dark"] .bal-item.bizim { background: linear-gradient(135deg,#1e3a6e,#1e40af) !important; }
+[data-theme="dark"] .bal-item.borc { background: linear-gradient(135deg,#7f1d1d,#991b1b) !important; }
+[data-theme="dark"] .bal-item.alacak { background: linear-gradient(135deg,#064e3b,#065f46) !important; }
+[data-theme="dark"] .bal-item.sifir { background: linear-gradient(135deg,#374151,#4b5563) !important; }
+[data-theme="dark"] .bal-item .bi-lbl { color: #d1d5db !important; }
+[data-theme="dark"] .bal-item .bi-val { color: #f9fafb !important; }
+
+/* Rozet */
+[data-theme="dark"] .badge-aktif { background: #064e3b !important; color: #6ee7b7 !important; }
+[data-theme="dark"] .badge-pasif { background: #7f1d1d !important; color: #fca5a5 !important; }
+[data-theme="dark"] .tag-kendi { background: #312e81 !important; color: #c4b5fd !important; }
+[data-theme="dark"] .tag-bizim { background: #1e3a6e !important; color: #93c5fd !important; }
+
+/* Form alanları */
+[data-theme="dark"] .fg input,[data-theme="dark"] .fg select,[data-theme="dark"] .fg textarea,
+[data-theme="dark"] .form-group input,[data-theme="dark"] .form-group select,[data-theme="dark"] .form-group textarea {
+    background: #374151 !important; color: #f9fafb !important; border-color: #4b5563 !important;
+}
+[data-theme="dark"] .fg label,[data-theme="dark"] .form-group label { color: #d1d5db !important; }
+[data-theme="dark"] .fg-hint { color: #6b7280 !important; }
+[data-theme="dark"] .calc { background: #374151 !important; border-color: #4b5563 !important; }
+[data-theme="dark"] .calc .cl { color: #9ca3af !important; }
+
+/* İş tipi sekmeleri */
+[data-theme="dark"] .is-tipi-tabs,[data-theme="dark"] .odeme-tipi-tabs { border-color: #4b5563 !important; }
+[data-theme="dark"] .is-tipi-tab { background: #374151 !important; color: #9ca3af !important; }
+[data-theme="dark"] .is-tipi-tab.active.kendi { background: #312e81 !important; color: #c4b5fd !important; }
+[data-theme="dark"] .is-tipi-tab.active.bizim { background: #1e3a6e !important; color: #93c5fd !important; }
+[data-theme="dark"] .odeme-tab { background: #374151 !important; color: #9ca3af !important; }
+[data-theme="dark"] .odeme-tab.active { background: #1e3a6e !important; color: #93c5fd !important; }
+
+/* Modal */
+[data-theme="dark"] .mbox,[data-theme="dark"] .modal-box,[data-theme="dark"] .modal-content {
+    background: #1f2937 !important; color: #e5e7eb !important;
+}
+[data-theme="dark"] .mhead,[data-theme="dark"] .modal-head { border-color: #374151 !important; }
+[data-theme="dark"] .fa,[data-theme="dark"] .form-actions { border-top-color: #374151 !important; }
+
+/* Butonlar */
+[data-theme="dark"] .btn-cancel { background: #374151 !important; color: #e5e7eb !important; }
+[data-theme="dark"] .btn-toggle-done { background: #374151 !important; color: #e5e7eb !important; }
+[data-theme="dark"] .btn-toggle-done.active { background: #451a03 !important; color: #fde68a !important; }
+[data-theme="dark"] .btn-back:not([style*="background:#667eea"]):not([style*="background:#ef4444"]) {
+    background: #374151 !important; color: #e5e7eb !important;
+}
+
+/* Bekleyen onaylar */
+[data-theme="dark"] .pending-sec { background: #1f2937 !important; }
+[data-theme="dark"] .pending-sec h2 { color: #fbbf24 !important; }
+[data-theme="dark"] .pending-item { border-bottom-color: #374151 !important; }
+[data-theme="dark"] .pending-info { color: #e5e7eb !important; }
+[data-theme="dark"] .pending-info .pi-detail { color: #9ca3af !important; }
+[data-theme="dark"] .pending-empty { color: #6b7280 !important; }
+[data-theme="dark"] .pb-teslim { background: #451a03 !important; color: #fde68a !important; }
+[data-theme="dark"] .pb-odeme { background: #1e3a6e !important; color: #93c5fd !important; }
+
+/* Toast */
+[data-theme="dark"] .toast { background: #1f2937 !important; color: #e5e7eb !important; }
+
+/* Dashboard özet kartlar */
+[data-theme="dark"] .s-card .lbl { color: #9ca3af !important; }
+[data-theme="dark"] .s-card .sub { color: #6b7280 !important; }
+[data-theme="dark"] .c-blue { color: #818cf8 !important; }
+[data-theme="dark"] .c-green { color: #34d399 !important; }
+[data-theme="dark"] .c-red { color: #f87171 !important; }
+
+/* Firma meta */
+[data-theme="dark"] .firm-meta { color: #9ca3af !important; }
+[data-theme="dark"] .firm-logo { border-color: #4b5563 !important; }
+
+/* Changelog */
+[data-theme="dark"] .version-block { background: #1f2937 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important; }
+[data-theme="dark"] .version-num { color: #f9fafb !important; }
+[data-theme="dark"] .version-date { background: #374151 !important; color: #9ca3af !important; }
+[data-theme="dark"] .change-list li { color: #d1d5db !important; border-bottom-color: #374151 !important; }
+[data-theme="dark"] .section-title { color: #6b7280 !important; }
+[data-theme="dark"] .page-title { color: #f9fafb !important; }
+[data-theme="dark"] .page-sub { color: #9ca3af !important; }

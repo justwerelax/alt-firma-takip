@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sürüm Notları - Alt Firma Takip</title>
     <link rel="stylesheet" href="../css/app.css">
+    <script src="../js/utils.js"></script>
+    <script>if(localStorage.getItem('darkMode')==='1')document.documentElement.dataset.theme='dark';</script>
     <style>
         body { background: #f5f7fa; }
         .header { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
@@ -35,7 +37,10 @@
 <body>
     <div class="header">
         <h1>📋 Sürüm Notları</h1>
-        <button class="btn-back" onclick="history.back()">← Geri Dön</button>
+        <div style="display:flex;gap:8px;">
+            <button id="darkToggle" onclick="DarkMode.toggle()" title="Karanlık Mod" style="padding:8px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-family:inherit;">🌙</button>
+            <button class="btn-back" onclick="history.back()">← Geri Dön</button>
+        </div>
     </div>
 
     <div class="container">
@@ -226,5 +231,6 @@
         </div>
 
     </div>
+    <script>DarkMode.init(); DarkMode.updateBtn();</script>
 </body>
 </html>

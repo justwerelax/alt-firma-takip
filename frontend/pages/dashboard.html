@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Alt Firma Takip</title>
+    <script>if(localStorage.getItem('darkMode')==='1')document.documentElement.dataset.theme='dark';</script>
     <link rel="stylesheet" href="../css/app.css">
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
@@ -129,6 +130,7 @@
     <div class="header">
         <h1>🧹 Alt Firma Takip</h1>
         <div style="display:flex;gap:8px;">
+            <button id="darkToggle" onclick="DarkMode.toggle()" title="Karanlık Mod" style="padding:8px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-family:inherit;">🌙</button>
             <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.2.1</button>
             <button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
         </div>
@@ -212,6 +214,7 @@
     <div id="toast" class="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
     <script>
+        DarkMode.init(); DarkMode.updateBtn();
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         // Firma kullanıcısı kendi detay sayfasına yönlendirilir

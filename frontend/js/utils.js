@@ -316,3 +316,27 @@ function getDurumBadge(durum) {
     const text = durum === 'aktif' ? 'Aktif' : 'Pasif';
     return `<span class="badge ${badgeClass}">${text}</span>`;
 }
+
+/**
+ * Dark Mode yönetimi
+ */
+const DarkMode = {
+    /** Sayfa yüklenirken flash olmadan uygula (script başında çağır) */
+    init() {
+        if (localStorage.getItem('darkMode') === '1') {
+            document.documentElement.dataset.theme = 'dark';
+        }
+    },
+    /** Butonu güncelle (DOM hazır olduktan sonra çağır) */
+    updateBtn() {
+        const btn = document.getElementById('darkToggle');
+        if (btn) btn.textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+    },
+    /** Toggle */
+    toggle() {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        document.documentElement.dataset.theme = isDark ? '' : 'dark';
+        localStorage.setItem('darkMode', isDark ? '0' : '1');
+        this.updateBtn();
+    }
+};
