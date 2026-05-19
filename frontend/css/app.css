@@ -701,8 +701,17 @@ tbody tr:last-child td {
 [data-theme="dark"] .tw tbody tr.row-bizim.card-open { background: #1e2d40 !important; }
 [data-theme="dark"] .tw tbody tr.card-open { background: #252d3d !important; box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important; }
 [data-theme="dark"] .tw tbody tr.card-open .card-detail::before { color: #6b7280 !important; }
-[data-theme="dark"] .tw tbody tr.card-open .card-detail[data-label="Borç"] { border-top-color: #374151 !important; }
+[data-theme="dark"] .tw tbody tr.card-open .card-detail[data-label="Bor\e7"] { border-top-color: #374151 !important; }
 [data-theme="dark"] .tw tbody tr.card-open .card-actions { border-top-color: #374151 !important; }
+
+/* İş satırı metin renkleri (inline style override) */
+[data-theme="dark"] .tw .cs-desc { color: #d1d5db !important; }
+[data-theme="dark"] .row-kendi .cs-amt { color: #c4b5fd !important; }
+[data-theme="dark"] .row-bizim .cs-amt { color: #93c5fd !important; }
+[data-theme="dark"] .tw td.card-detail { color: #d1d5db !important; }
+[data-theme="dark"] .row-kendi td.card-detail[data-label="Bor\e7"] { color: #c4b5fd !important; }
+[data-theme="dark"] .row-bizim td.card-detail[data-label="Bor\e7"] { color: #93c5fd !important; }
+[data-theme="dark"] .tw tbody tr[style*="background:#f0fdf4"] { background: #052e16 !important; }
 
 /* Bölüm başlıkları (tablo içi) */
 [data-theme="dark"] .sec-hdr-kendi td { background: #1e1a3a !important; }
@@ -711,11 +720,13 @@ tbody tr:last-child td {
 [data-theme="dark"] .sec-hdr-bizim .sec-hdr-label { background: #1e3a6e !important; color: #93c5fd !important; }
 
 /* Bakiye kartları */
-[data-theme="dark"] .bal-item.kendi { background: linear-gradient(135deg,#312e81,#3730a3) !important; }
-[data-theme="dark"] .bal-item.bizim { background: linear-gradient(135deg,#1e3a6e,#1e40af) !important; }
-[data-theme="dark"] .bal-item.borc { background: linear-gradient(135deg,#7f1d1d,#991b1b) !important; }
+[data-theme="dark"] .bal-item.kendi  { background: linear-gradient(135deg,#312e81,#3730a3) !important; }
+[data-theme="dark"] .bal-item.bizim  { background: linear-gradient(135deg,#1e3a6e,#1e40af) !important; }
+[data-theme="dark"] .bal-item.odeme  { background: linear-gradient(135deg,#0c4a6e,#075985) !important; }
+[data-theme="dark"] .bal-item.odeme .bi-val { color: #7dd3fc !important; }
+[data-theme="dark"] .bal-item.borc   { background: linear-gradient(135deg,#7f1d1d,#991b1b) !important; }
 [data-theme="dark"] .bal-item.alacak { background: linear-gradient(135deg,#064e3b,#065f46) !important; }
-[data-theme="dark"] .bal-item.sifir { background: linear-gradient(135deg,#374151,#4b5563) !important; }
+[data-theme="dark"] .bal-item.sifir  { background: linear-gradient(135deg,#374151,#4b5563) !important; }
 [data-theme="dark"] .bal-item .bi-lbl { color: #d1d5db !important; }
 [data-theme="dark"] .bal-item .bi-val { color: #f9fafb !important; }
 
