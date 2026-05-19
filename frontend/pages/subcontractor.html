@@ -88,6 +88,8 @@
         /* Bitmiş işleri gizle butonu */
         .btn-toggle-done { padding: 9px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
         .btn-toggle-done.active { background: #fef3c7; color: #92400e; }
+        /* Bölüm başlığı buton grubu */
+        .sec-hd-btns { display: flex; gap: 8px; align-items: center; }
         /* Bekleyen Onaylar */
         .pending-sec { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px 24px; margin-bottom: 20px; border-left: 4px solid #f59e0b; }
         .pending-sec h2 { font-size: 16px; font-weight: 700; color: #92400e; margin-bottom: 14px; }
@@ -181,9 +183,17 @@
                 background: white; border-radius: 10px;
                 padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
                 margin-bottom: 10px; text-align: center; gap: 8px;
+                align-items: center;
             }
             .sec-hd h2 { font-size: 15px; }
+            /* Buton grubu tam genişlik, eşit bölüm */
+            .sec-hd-btns { width: 100%; }
+            .sec-hd-btns .btn-toggle-done,
+            .sec-hd-btns .btn-add { flex: 1; text-align: center; }
+            /* Para Hareketleri / tek buton tam genişlik */
+            .sec-hd > .btn-add { width: 100%; }
             .pending-sec h2 { text-align: center; }
+            .pending-empty { text-align: center; }
             .stats-toggle-btn { justify-content: center; gap: 8px; }
 
             /* KAPALI KART: sadece özet görünür, detaylar gizli */
@@ -318,7 +328,7 @@
             <div class="sec">
                 <div class="sec-hd">
                     <h2>Yıkama İşleri</h2>
-                    <div style="display:flex;gap:8px;align-items:center;">
+                    <div class="sec-hd-btns">
                         <button id="toggleDoneBtn" class="btn-toggle-done" onclick="toggleDoneJobs()">Bitmiş İşleri Gizle</button>
                         <button id="addJobBtn" class="btn-add" onclick="openJobModal()">+ Yeni İş Ekle</button>
                     </div>
