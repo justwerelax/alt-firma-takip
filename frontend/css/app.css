@@ -694,6 +694,10 @@ tbody tr:last-child td {
 [data-theme="dark"] tbody tr:hover { background: #2d3748 !important; }
 [data-theme="dark"] .table-wrap tbody tr { background: #1f2937 !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important; }
 
+/* Genel tablo satırları (ödeme kartları dahil) */
+[data-theme="dark"] .tw tbody tr { background: #1f2937 !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important; }
+[data-theme="dark"] .tw tbody tr:hover { background: #2d3748 !important; }
+
 /* İş satırı renkleri */
 [data-theme="dark"] .tw tbody tr.row-kendi { background: #2d2b1a !important; }
 [data-theme="dark"] .tw tbody tr.row-kendi.card-open { background: #3d3920 !important; }
@@ -803,6 +807,6 @@ tbody tr:last-child td {
 [data-theme="dark"] .page-sub { color: #9ca3af !important; }
 
 /* Bottom Nav */
-[data-theme="dark"] .bottom-nav { background: #1f2937 !important; border-top-color: #374151 !important; box-shadow: 0 -2px 12px rgba(0,0,0,0.4) !important; }
-[data-theme="dark"] .bn-tab { color: #6b7280 !important; }
-[data-theme="dark"] .bn-tab.active { color: #818cf8 !important; }
+[data-theme="dark"] .bottom-nav { background: #111827 !important; border-top-color: #1f2937 !important; box-shadow: 0 -2px 16px rgba(0,0,0,0.5) !important; }
+[data-theme="dark"] .bn-tab { background: #1f2937 !important; color: #6b7280 !important; box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important; }
+[data-theme="dark"] .bn-tab.active { background: linear-gradient(135deg,#4f46e5,#6d28d9) !important; color: white !important; box-shadow: 0 3px 10px rgba(79,70,229,0.4) !important; }
