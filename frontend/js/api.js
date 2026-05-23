@@ -39,11 +39,12 @@ class API {
             // Handle 401 Unauthorized - token expired or invalid
             if (response.status === 401) {
                 this.clearToken();
-                if (window.location.hash !== '#login') {
-                    window.location.href = '#login';
-                }
+                localStorage.removeItem('user');
+                window.location.replace('login.html');
+                // Redirect başlayana kadar bekle, toast gösterilmesin
+                await new Promise(() => {});
             }
-            
+
             return data;
         } catch (error) {
             console.error('API request error:', error);
