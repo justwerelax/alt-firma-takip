@@ -163,7 +163,7 @@
         </div><!-- /nav-ozet -->
 
         <!-- ===== PANEL: FİRMALAR ===== -->
-        <div id="nav-firmalar" class="nav-panel">
+        <div id="nav-firmalar" class="nav-panel" style="display:none;">
         <div class="sec-header">
             <h2>Alt Firmalar</h2>
             <button id="addBtn" class="btn-add">+ Yeni Alt Firma</button>
@@ -255,20 +255,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function initNav() {
-            const bottomNav = document.querySelector('.bottom-nav');
-            if (!bottomNav) return;
-            const style = window.getComputedStyle(bottomNav);
-            if (style.display !== 'none') {
-                NAV_TABS.forEach(t => {
-                    const panel = document.getElementById('nav-' + t);
-                    if (panel && !panel.classList.contains('nav-active')) {
-                        panel.style.display = 'none';
-                    }
-                });
-            }
+        // Desktop'ta tüm panelleri göster
+        if (window.innerWidth > 640) {
+            NAV_TABS.forEach(t => {
+                const panel = document.getElementById('nav-' + t);
+                if (panel) panel.style.display = '';
+            });
         }
-        initNav();
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         // Firma kullanıcısı kendi detay sayfasına yönlendirilir

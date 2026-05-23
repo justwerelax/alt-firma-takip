@@ -339,7 +339,7 @@
             </div><!-- /nav-anasayfa -->
 
             <!-- ===== PANEL: İŞLER ===== -->
-            <div id="nav-isler" class="nav-panel">
+            <div id="nav-isler" class="nav-panel" style="display:none;">
 
             <!-- İşler -->
             <div class="sec">
@@ -361,7 +361,7 @@
             </div><!-- /nav-isler -->
 
             <!-- ===== PANEL: ÖDEMELER ===== -->
-            <div id="nav-odemeler" class="nav-panel">
+            <div id="nav-odemeler" class="nav-panel" style="display:none;">
 
             <!-- Para Hareketleri -->
             <div class="sec">
@@ -540,21 +540,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Mobilde sayfa açılışında aktif olmayan panelleri gizle
-        function initNav() {
-            const bottomNav = document.querySelector('.bottom-nav');
-            if (!bottomNav) return;
-            const style = window.getComputedStyle(bottomNav);
-            if (style.display !== 'none') {
-                NAV_TABS.forEach(t => {
-                    const panel = document.getElementById('nav-' + t);
-                    if (panel && !panel.classList.contains('nav-active')) {
-                        panel.style.display = 'none';
-                    }
-                });
-            }
+        // Desktop'ta tüm panelleri göster
+        if (window.innerWidth > 640) {
+            NAV_TABS.forEach(t => {
+                const panel = document.getElementById('nav-' + t);
+                if (panel) panel.style.display = '';
+            });
         }
-        initNav();
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         const isAdmin  = Auth.isAdmin();
