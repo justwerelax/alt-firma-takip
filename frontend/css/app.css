@@ -801,3 +801,8 @@ tbody tr:last-child td {
 [data-theme="dark"] .section-title { color: #6b7280 !important; }
 [data-theme="dark"] .page-title { color: #f9fafb !important; }
 [data-theme="dark"] .page-sub { color: #9ca3af !important; }
+
+/* Bottom Nav */
+[data-theme="dark"] .bottom-nav { background: #1f2937 !important; border-top-color: #374151 !important; box-shadow: 0 -2px 12px rgba(0,0,0,0.4) !important; }
+[data-theme="dark"] .bn-tab { color: #6b7280 !important; }
+[data-theme="dark"] .bn-tab.active { color: #818cf8 !important; }

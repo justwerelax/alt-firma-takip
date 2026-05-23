@@ -128,6 +128,44 @@
         .sec-hdr-kendi td { background: #f3f0ff; color: #5b21b6; padding: 10px 14px; font-weight: 700; font-size: 13px; }
         .sec-hdr-bizim td { background: #eff6ff; color: #1d4ed8; padding: 10px 14px; font-weight: 700; font-size: 13px; }
 
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav { display: none; }
+
+        @media (max-width: 640px) {
+            .nav-panel { display: none; }
+            .nav-panel.nav-active { display: block; }
+            body { padding-bottom: 70px; }
+            .bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+                background: white;
+                height: 62px;
+                box-shadow: 0 -2px 12px rgba(0,0,0,0.10);
+                border-top: 1px solid #e5e7eb;
+                z-index: 200;
+            }
+            .bn-tab {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                padding: 8px 4px;
+                font-family: inherit;
+                color: #9ca3af;
+                transition: color 0.15s;
+            }
+            .bn-tab.active { color: #667eea; }
+            .bn-tab.active .bn-icon { transform: scale(1.1); }
+            .bn-icon { font-size: 22px; line-height: 1; transition: transform 0.15s; }
+            .bn-label { font-size: 10px; font-weight: 700; }
+        }
+
         /* Kart tıklama */
         .tw tbody tr { cursor: pointer; }
         .tw tbody tr.sec-hdr { cursor: default; }
@@ -272,7 +310,7 @@
         <div style="display:flex;gap:8px;">
             <button id="darkToggle" onclick="DarkMode.toggle()" title="Karanlık Mod" style="padding:8px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-family:inherit;">🌙</button>
             <button class="btn-back" onclick="location.href='dashboard.html'">← Geri Dön</button>
-            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.3.0</button>
+            <button class="btn-back" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.4.0</button>
             <button class="btn-back" style="background:#ef4444;" onclick="Auth.logout()">Çıkış Yap</button>
         </div>
     </div>
@@ -280,6 +318,9 @@
     <div class="container">
         <div id="loadingMsg" style="text-align:center;padding:60px;color:#9ca3af;">⏳ Yükleniyor...</div>
         <div id="content" style="display:none;">
+
+            <!-- ===== PANEL: ANA EKRAN ===== -->
+            <div id="nav-anasayfa" class="nav-panel nav-active">
 
             <!-- Bekleyen Onaylar (sadece admin) -->
             <div id="pendingSec" class="pending-sec" style="display:none;">
@@ -331,6 +372,11 @@
                 </div>
             </div>
 
+            </div><!-- /nav-anasayfa -->
+
+            <!-- ===== PANEL: İŞLER ===== -->
+            <div id="nav-isler" class="nav-panel">
+
             <!-- İşler -->
             <div class="sec">
                 <div class="sec-hd">
@@ -347,6 +393,11 @@
                     </table>
                 </div>
             </div>
+
+            </div><!-- /nav-isler -->
+
+            <!-- ===== PANEL: ÖDEMELER ===== -->
+            <div id="nav-odemeler" class="nav-panel">
 
             <!-- Para Hareketleri -->
             <div class="sec">
@@ -372,6 +423,8 @@
                     </table>
                 </div>
             </div>
+
+            </div><!-- /nav-odemeler -->
 
 
         </div>
@@ -487,9 +540,36 @@
 
     <div id="toast" class="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="bn-tab active" id="bn-anasayfa" onclick="switchNav('anasayfa')">
+            <span class="bn-icon">🏠</span>
+            <span class="bn-label">Ana Ekran</span>
+        </button>
+        <button class="bn-tab" id="bn-isler" onclick="switchNav('isler')">
+            <span class="bn-icon">📋</span>
+            <span class="bn-label">İşler</span>
+        </button>
+        <button class="bn-tab" id="bn-odemeler" onclick="switchNav('odemeler')">
+            <span class="bn-icon">💰</span>
+            <span class="bn-label">Ödemeler</span>
+        </button>
+    </nav>
+
     <script>
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
         DarkMode.init(); DarkMode.updateBtn();
+
+        function switchNav(tab) {
+            ['anasayfa','isler','odemeler'].forEach(t => {
+                const panel = document.getElementById('nav-' + t);
+                const btn   = document.getElementById('bn-' + t);
+                if (panel) panel.classList.toggle('nav-active', t === tab);
+                if (btn)   btn.classList.toggle('active', t === tab);
+            });
+            // scroll to top on tab switch (mobile)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         const isAdmin  = Auth.isAdmin();

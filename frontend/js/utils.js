@@ -335,7 +335,11 @@ const DarkMode = {
     /** Toggle */
     toggle() {
         const isDark = document.documentElement.dataset.theme === 'dark';
-        document.documentElement.dataset.theme = isDark ? '' : 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.dataset.theme = 'dark';
+        }
         localStorage.setItem('darkMode', isDark ? '0' : '1');
         this.updateBtn();
     }

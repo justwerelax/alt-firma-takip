@@ -5,8 +5,10 @@
 
 class API {
     constructor() {
-        // API base URL - update this for production
-        this.baseURL = '/backend/api';
+        // API base URL - localhost ve production otomatik algıla
+        this.baseURL = window.location.hostname === 'localhost'
+            ? '/alt-firma-takip/backend/api'
+            : '/backend/api';
         this.token = localStorage.getItem('token');
     }
     
