@@ -239,15 +239,36 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
         DarkMode.init(); DarkMode.updateBtn();
 
+        const NAV_TABS = ['ozet','firmalar'];
+
         function switchNav(tab) {
-            ['ozet','firmalar'].forEach(t => {
+            NAV_TABS.forEach(t => {
                 const panel = document.getElementById('nav-' + t);
                 const btn   = document.getElementById('bn-' + t);
-                if (panel) panel.classList.toggle('nav-active', t === tab);
-                if (btn)   btn.classList.toggle('active', t === tab);
+                const isActive = t === tab;
+                if (panel) {
+                    panel.style.display = isActive ? '' : 'none';
+                    panel.classList.toggle('nav-active', isActive);
+                }
+                if (btn) btn.classList.toggle('active', isActive);
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        function initNav() {
+            const bottomNav = document.querySelector('.bottom-nav');
+            if (!bottomNav) return;
+            const style = window.getComputedStyle(bottomNav);
+            if (style.display !== 'none') {
+                NAV_TABS.forEach(t => {
+                    const panel = document.getElementById('nav-' + t);
+                    if (panel && !panel.classList.contains('nav-active')) {
+                        panel.style.display = 'none';
+                    }
+                });
+            }
+        }
+        initNav();
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         // Firma kullanıcısı kendi detay sayfasına yönlendirilir
