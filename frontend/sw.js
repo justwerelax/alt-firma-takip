@@ -1,4 +1,4 @@
-const CACHE = 'altfirma-v1';
+const CACHE = 'altfirma-v2';
 const STATIC = [
   './pages/dashboard.html',
   './pages/subcontractor.html',
