@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/aspendos/public_html/altfirmatakip/
-    - /bin/cp -R . $DEPLOYPATH
+    - export DEPLOYPATH=/home/aspendos/public_html/altfirmatakip
+    - /bin/true
