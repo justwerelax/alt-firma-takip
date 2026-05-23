@@ -1,25 +1,31 @@
 {
-  "name": "Alt Firma Takip Sistemi",
-  "short_name": "Alt Firma",
+  "name": "Alt Firma Takip",
+  "short_name": "Firma Takip",
   "description": "Halı yıkama alt firma takip ve yönetim sistemi",
-  "start_url": "/frontend/",
+  "start_url": "/frontend/pages/dashboard.html",
   "scope": "/frontend/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#ffffff",
+  "background_color": "#667eea",
   "theme_color": "#667eea",
   "icons": [
     {
-      "src": "assets/icons/icon-192x192.svg",
+      "src": "../assets/icons/icon-192x192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "assets/icons/icon-512x512.svg",
+      "src": "../assets/icons/icon-512x512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "../assets/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "categories": ["business", "productivity"]

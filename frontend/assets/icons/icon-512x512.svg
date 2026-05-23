@@ -1,11 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="100" fill="url(#grad)"/>
-  <text x="256" y="310" font-family="Arial, sans-serif" font-size="240" font-weight="bold" text-anchor="middle" fill="white">A</text>
-  <text x="256" y="410" font-family="Arial, sans-serif" font-size="60" font-weight="500" text-anchor="middle" fill="rgba(255,255,255,0.85)">Takip</text>
+  <!-- Arka plan -->
+  <rect width="512" height="512" rx="100" fill="url(#g)"/>
+  <!-- Çatı -->
+  <polygon points="256,72 68,218 444,218" fill="rgba(255,255,255,0.92)"/>
+  <!-- Bina gövdesi -->
+  <rect x="90" y="208" width="332" height="240" rx="12" fill="white"/>
+  <!-- Sol pencere -->
+  <rect x="130" y="256" width="92" height="64" rx="12" fill="url(#g)"/>
+  <!-- Sağ pencere -->
+  <rect x="290" y="256" width="92" height="64" rx="12" fill="url(#g)"/>
+  <!-- Kapı -->
+  <rect x="202" y="326" width="108" height="122" rx="12" fill="url(#g)"/>
+  <!-- Kapı topu -->
+  <circle cx="296" cy="390" r="8" fill="rgba(255,255,255,0.7)"/>
+  <!-- Alt dalga (yıkama) -->
+  <path d="M90 414 Q144 390 198 414 Q252 438 306 414 Q360 390 422 414" stroke="rgba(255,255,255,0.45)" stroke-width="10" fill="none" stroke-linecap="round"/>
 </svg>
