@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head><meta charset="UTF-8"><title>İkon Oluşturucu</title>
+<style>body{font-family:sans-serif;padding:30px;background:#f5f7fa;} canvas{border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,0.15);margin:10px;} .btn{display:inline-block;margin:8px;padding:10px 22px;background:#667eea;color:white;border-radius:8px;text-decoration:none;font-weight:600;cursor:pointer;} h2{color:#374151;}</style>
+</head>
+<body>
+<h2>🎨 PWA İkon Oluşturucu</h2>
+<p>Aşağıdaki ikonları indir, sunucuya <code>frontend/assets/icons/</code> klasörüne yükle.</p>
+<div id="out"></div>
+<script>
+function draw(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const s = size / 192;
+  const r = 38 * s;
+
+  // Rounded square clip
+  ctx.beginPath();
+  ctx.moveTo(r, 0); ctx.lineTo(size-r, 0);
+  ctx.arcTo(size, 0, size, r, r);
+  ctx.lineTo(size, size-r);
+  ctx.arcTo(size, size, size-r, size, r);
+  ctx.lineTo(r, size);
+  ctx.arcTo(0, size, 0, size-r, r);
+  ctx.lineTo(0, r);
+  ctx.arcTo(0, 0, r, 0, r);
+  ctx.closePath();
+  ctx.clip();
+
+  // Gradient bg
+  const g = ctx.createLinearGradient(0, 0, size, size);
+  g.addColorStop(0, '#667eea');
+  g.addColorStop(1, '#764ba2');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+
+  function rr(x,y,w,h,rad) {
+    ctx.beginPath();
+    ctx.moveTo((x+rad)*s,(y)*s);
+    ctx.lineTo((x+w-rad)*s,(y)*s);
+    ctx.arcTo((x+w)*s,(y)*s,(x+w)*s,(y+rad)*s,rad*s);
+    ctx.lineTo((x+w)*s,(y+h-rad)*s);
+    ctx.arcTo((x+w)*s,(y+h)*s,(x+w-rad)*s,(y+h)*s,rad*s);
+    ctx.lineTo((x+rad)*s,(y+h)*s);
+    ctx.arcTo((x)*s,(y+h)*s,(x)*s,(y+h-rad)*s,rad*s);
+    ctx.lineTo((x)*s,(y+rad)*s);
+    ctx.arcTo((x)*s,(y)*s,(x+rad)*s,(y)*s,rad*s);
+    ctx.closePath();
+  }
+
+  // Roof
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.beginPath();
+  ctx.moveTo(96*s,28*s); ctx.lineTo(26*s,82*s); ctx.lineTo(166*s,82*s);
+  ctx.closePath(); ctx.fill();
+
+  // Body
+  ctx.fillStyle = 'white';
+  rr(34,78,124,90,5); ctx.fill();
+
+  // Left window
+  const grad2 = ctx.createLinearGradient(0,0,size,size);
+  grad2.addColorStop(0,'#667eea'); grad2.addColorStop(1,'#764ba2');
+  ctx.fillStyle = grad2;
+  rr(50,96,34,24,4); ctx.fill();
+
+  // Right window
+  rr(108,96,34,24,4); ctx.fill();
+
+  // Door
+  rr(76,122,40,46,5); ctx.fill();
+
+  // Door knob
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.beginPath(); ctx.arc(110*s,147*s,3*s,0,Math.PI*2); ctx.fill();
+
+  // Wave
+  ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+  ctx.lineWidth = 4*s;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(34*s,155*s);
+  ctx.quadraticCurveTo(54*s,145*s,74*s,155*s);
+  ctx.quadraticCurveTo(94*s,165*s,114*s,155*s);
+  ctx.quadraticCurveTo(134*s,145*s,158*s,155*s);
+  ctx.stroke();
+
+  return c;
+}
+
+const out = document.getElementById('out');
+[192, 512].forEach(size => {
+  const c = draw(size);
+  out.appendChild(c);
+  const a = document.createElement('a');
+  a.className = 'btn';
+  a.href = c.toDataURL('image/png');
+  a.download = `icon-${size}x${size}.png`;
+  a.textContent = `⬇ icon-${size}x${size}.png indir`;
+  out.appendChild(a);
+  out.appendChild(document.createElement('br'));
+});
+</script>
+</body>
+</html>

@@ -1,68 +1,44 @@
-const CACHE_NAME = 'alt-firma-takip-v2';
-const ASSETS_TO_CACHE = [
-    '/frontend/',
-    '/frontend/index.html',
-    '/frontend/pages/login.html',
-    '/frontend/pages/dashboard.html',
-    '/frontend/pages/subcontractor.html',
-    '/frontend/pages/changelog.html',
-    '/frontend/js/api.js',
-    '/frontend/js/auth.js',
-    '/frontend/js/utils.js',
-    '/frontend/js/app.js',
-    '/frontend/css/app.css',
-    '/frontend/manifest.json'
+const CACHE = 'altfirma-v1';
+const STATIC = [
+  './pages/dashboard.html',
+  './pages/subcontractor.html',
+  './pages/changelog.html',
+  './css/app.css',
+  './js/api.js',
+  './js/auth.js',
+  './js/utils.js',
 ];
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(ASSETS_TO_CACHE))
-            .catch(err => console.error('Cache error:', err))
-    );
-    self.skipWaiting();
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC).catch(() => {})));
+  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-        )
-    );
-    self.clients.claim();
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-    const { request } = event;
-    const url = new URL(request.url);
-
-    if (request.method !== 'GET') return;
-
-    // API istekleri her zaman network'ten — cache'leme yok
-    if (url.pathname.startsWith('/backend/')) {
-        event.respondWith(
-            fetch(request).catch(() => new Response(
-                JSON.stringify({ success: false, error: 'Çevrimdışı — sunucuya erişilemiyor' }),
-                { status: 503, headers: { 'Content-Type': 'application/json' } }
-            ))
-        );
-        return;
-    }
-
-    // Statik dosyalar: cache-first
-    event.respondWith(
-        caches.match(request).then(cached => {
-            if (cached) return cached;
-            return fetch(request).then(response => {
-                if (!response || response.status !== 200 || response.type === 'error') return response;
-                const clone = response.clone();
-                caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-                return response;
-            }).catch(() => caches.match('/frontend/index.html'));
+self.addEventListener('fetch', e => {
+  // API istekleri her zaman agdan
+  if (e.request.url.includes('/backend/')) {
+    e.respondWith(
+      fetch(e.request).catch(() =>
+        new Response('{"success":false,"error":"Cevrimdisi"}', {
+          headers: { 'Content-Type': 'application/json' }
         })
+      )
     );
-});
-
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+    return;
+  }
+  // Statik: once cache, yoksa ag
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
+      return res;
+    }))
+  );
 });

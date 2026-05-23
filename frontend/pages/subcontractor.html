@@ -488,6 +488,7 @@
     <div id="toast" class="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
     <script>
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
         DarkMode.init(); DarkMode.updateBtn();
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
