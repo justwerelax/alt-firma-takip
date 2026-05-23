@@ -140,6 +140,8 @@
     </div>
 
     <div class="container">
+        <!-- ===== PANEL: ÖZET ===== -->
+        <div id="nav-ozet" class="nav-panel nav-active">
         <div class="summary-cards">
             <div class="s-card">
                 <div class="lbl">Ana Firma Borcu</div>
@@ -158,6 +160,10 @@
             </div>
         </div>
 
+        </div><!-- /nav-ozet -->
+
+        <!-- ===== PANEL: FİRMALAR ===== -->
+        <div id="nav-firmalar" class="nav-panel">
         <div class="sec-header">
             <h2>Alt Firmalar</h2>
             <button id="addBtn" class="btn-add">+ Yeni Alt Firma</button>
@@ -175,6 +181,7 @@
                 </tbody>
             </table>
         </div>
+        </div><!-- /nav-firmalar -->
     </div>
 
     <!-- Add/Edit Modal -->
@@ -216,9 +223,31 @@
 
     <div id="toast" class="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="bn-tab active" id="bn-ozet" onclick="switchNav('ozet')">
+            <span class="bn-icon">📊</span>
+            <span class="bn-label">Özet</span>
+        </button>
+        <button class="bn-tab" id="bn-firmalar" onclick="switchNav('firmalar')">
+            <span class="bn-icon">🏢</span>
+            <span class="bn-label">Firmalar</span>
+        </button>
+    </nav>
+
     <script>
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
         DarkMode.init(); DarkMode.updateBtn();
+
+        function switchNav(tab) {
+            ['ozet','firmalar'].forEach(t => {
+                const panel = document.getElementById('nav-' + t);
+                const btn   = document.getElementById('bn-' + t);
+                if (panel) panel.classList.toggle('nav-active', t === tab);
+                if (btn)   btn.classList.toggle('active', t === tab);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         if (!Auth.isAuthenticated()) { window.location.replace('login.html'); }
 
         // Firma kullanıcısı kendi detay sayfasına yönlendirilir
@@ -266,7 +295,7 @@
                     const balText  = (bal > 0 ? '+' : bal < 0 ? '-' : '') + formatCurrency(Math.abs(bal));
                     const komisyon = parseFloat(s.komisyon_orani) * 100;
                     const logoHtml = s.logo_url
-                        ? `<img src="${s.logo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:7px;vertical-align:middle;border:1px solid #e5e7eb;" onerror="this.style.display='none'">`
+                        ? `<img src="${s.logo_url}" class="firm-logo-sm" style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:7px;vertical-align:middle;border:1px solid #e5e7eb;" onerror="this.style.display='none'">`
                         : '';
                     return `<tr>
                         <td data-label="Firma"><strong>${logoHtml}${s.ad}</strong></td>
