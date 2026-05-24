@@ -1,8 +1,7 @@
-const CACHE = 'altfirma-v2';
+const CACHE = 'altfirma-v3';
+
+// Sadece CSS ve JS cache'lenir — HTML her zaman ağdan çekilir
 const STATIC = [
-  './pages/dashboard.html',
-  './pages/subcontractor.html',
-  './pages/changelog.html',
   './css/app.css',
   './js/api.js',
   './js/auth.js',
@@ -22,8 +21,10 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // API istekleri her zaman agdan
-  if (e.request.url.includes('/backend/')) {
+  const url = e.request.url;
+
+  // API istekleri her zaman ağdan
+  if (url.includes('/backend/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
         new Response('{"success":false,"error":"Cevrimdisi"}', {
@@ -33,7 +34,22 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // Statik: once cache, yoksa ag
+
+  // HTML dosyaları: önce ağdan, başarısız olursa cache
+  if (e.request.destination === 'document' || url.endsWith('.html')) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // CSS/JS: önce cache, yoksa ağdan
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).then(res => {
       const clone = res.clone();
