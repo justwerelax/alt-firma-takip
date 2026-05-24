@@ -2,7 +2,7 @@ const CACHE = 'altfirma-v3';
 
 // Sadece CSS ve JS cache'lenir — HTML her zaman ağdan çekilir
 const STATIC = [
-  './css/app.css',
+  './css/app.css?v=3',
   './js/api.js',
   './js/auth.js',
   './js/utils.js',
