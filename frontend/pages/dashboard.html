@@ -127,6 +127,34 @@
             .table-wrap tbody td[data-label=""] .actions { flex-wrap: wrap; gap: 6px; }
             .table-wrap tbody td[data-label=""] .btn-sm { flex: 1; text-align: center; padding: 8px; }
         }
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            display: flex;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #f1f3f9;
+            height: 70px;
+            padding: 8px 10px;
+            gap: 8px;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
+            border-top: 1px solid #e5e7eb;
+            z-index: 200;
+        }
+        .bn-tab {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 3px; border: none; background: white;
+            cursor: pointer; padding: 8px 4px; font-family: inherit;
+            color: #9ca3af; border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07); transition: all 0.2s;
+        }
+        .bn-tab.active { background: linear-gradient(135deg,#667eea,#764ba2); color: white; box-shadow: 0 3px 10px rgba(102,126,234,0.4); }
+        .bn-tab.active .bn-icon { transform: scale(1.15); }
+        .bn-icon { font-size: 20px; line-height: 1; transition: transform 0.2s; }
+        .bn-label { font-size: 10px; font-weight: 700; }
+        [data-theme="dark"] .bottom-nav { background: #111827 !important; border-top-color: #1f2937 !important; }
+        [data-theme="dark"] .bn-tab { background: #1f2937 !important; color: #6b7280 !important; }
+        [data-theme="dark"] .bn-tab.active { background: linear-gradient(135deg,#4f46e5,#6d28d9) !important; color: white !important; }
     </style>
 </head>
 <body>
