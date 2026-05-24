@@ -540,8 +540,10 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Desktop'ta tüm panelleri göster
+        // Desktop'ta tüm panelleri göster, nav'ı gizle
         if (window.innerWidth > 640) {
+            const nav = document.querySelector('.bottom-nav');
+            if (nav) nav.style.display = 'none';
             NAV_TABS.forEach(t => {
                 const panel = document.getElementById('nav-' + t);
                 if (panel) panel.style.display = '';
