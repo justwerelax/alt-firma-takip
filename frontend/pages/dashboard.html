@@ -155,16 +155,21 @@
         [data-theme="dark"] .bottom-nav { background: #111827 !important; border-top-color: #1f2937 !important; }
         [data-theme="dark"] .bn-tab { background: #1f2937 !important; color: #6b7280 !important; }
         [data-theme="dark"] .bn-tab.active { background: linear-gradient(135deg,#4f46e5,#6d28d9) !important; color: white !important; }
+        /* Ayarlar Paneli */
+        .settings-card { background: white; border-radius: 14px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #374151; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row .sr-label { font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .setting-btn { padding: 8px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: inherit; font-weight: 600; }
+        [data-theme="dark"] .settings-card { background: #1f2937 !important; }
+        [data-theme="dark"] .setting-row { border-bottom-color: #374151 !important; color: #e5e7eb !important; }
+        [data-theme="dark"] .setting-btn { background: #374151 !important; color: #e5e7eb !important; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🧹 Alt Firma Takip</h1>
-        <div style="display:flex;gap:8px;">
-            <button id="darkToggle" onclick="DarkMode.toggle()" title="Karanlık Mod" style="padding:8px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-family:inherit;">🌙</button>
-            <button class="btn-logout" style="background:#e5e7eb;color:#374151;" onclick="location.href='changelog.html'">📋 v1.4.2</button>
-            <button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
-        </div>
+        <button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
     </div>
 
     <div class="container">
@@ -210,6 +215,20 @@
             </table>
         </div>
         </div><!-- /nav-firmalar -->
+
+        <!-- ===== PANEL: AYARLAR ===== -->
+        <div id="nav-ayarlar" class="nav-panel" style="display:none;">
+            <div class="settings-card">
+                <div class="setting-row">
+                    <span class="sr-label">🌙 Karanlık Mod</span>
+                    <button id="darkToggle" class="setting-btn" onclick="DarkMode.toggle()">🌙</button>
+                </div>
+                <div class="setting-row">
+                    <span class="sr-label">📋 Güncelleme Geçmişi</span>
+                    <button class="setting-btn" onclick="location.href='changelog.html'">v1.5.0</button>
+                </div>
+            </div>
+        </div><!-- /nav-ayarlar -->
     </div>
 
     <!-- Add/Edit Modal -->
@@ -261,13 +280,17 @@
             <span class="bn-icon">🏢</span>
             <span class="bn-label">Firmalar</span>
         </button>
+        <button class="bn-tab" id="bn-ayarlar" onclick="switchNav('ayarlar')">
+            <span class="bn-icon">⚙️</span>
+            <span class="bn-label">Ayarlar</span>
+        </button>
     </nav>
 
     <script>
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
         DarkMode.init(); DarkMode.updateBtn();
 
-        const NAV_TABS = ['ozet','firmalar'];
+        const NAV_TABS = ['ozet','firmalar','ayarlar'];
 
         function switchNav(tab) {
             NAV_TABS.forEach(t => {
